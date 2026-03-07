@@ -45,7 +45,7 @@ is recommended and used in the examples in this readme. You will need python to
 be installed, that is the only dependency.
 
 *Setup the required prompts.* These must live in `~/.gen` and you can easily
-use the defaults by simlinking those found in this repo under `.gen/`. You can
+use the defaults by symlinking those found in this repo under `.gen/`. You can
 rewrite these as you see need, or just keep using the defaults.
 
 *Add your LLM provider(s)*. To generate the completions you'll need to point
