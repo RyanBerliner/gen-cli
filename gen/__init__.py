@@ -44,7 +44,7 @@ def generate(system_prompt, args, stream_cb):
     endpoint = ''
 
     if options['provider'] == 'ollama':
-        endpoint = otions['endpoint'] + '/api/generate'
+        endpoint = options['endpoint'] + '/api/generate'
         json_payload['system'] = system_prompt
         json_payload['prompt'] = args.prompt
     if options['provider'] == 'cerebras':
