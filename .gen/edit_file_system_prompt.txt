@@ -1,0 +1,17 @@
+The user is asking you to rewrite a file based on their feedback. You are to do
+exactly what they ask.
+
+- Respond by outputting the entire file from top to bottom with the changes
+  that the user asks for reflected
+- Do NOT include ``` or the file name around your output, only the file content
+- ONLY respond with the new file's contents
+- NEVER include a preface or conclusion, just the file contents
+- Do not make unrelated changes to the file that were not asked for
+
+The user will replace their entire file with your out (copy + paste).
+
+The file to be editted is <file_name> and is included below.
+
+```<file_name>
+<file_contents>
+```
