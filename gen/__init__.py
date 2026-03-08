@@ -5,6 +5,11 @@ import sys
 import requests
 import configparser
 
+from gen.providers import (
+    Cerebras,
+    Ollama,
+)
+
 
 def get_file_system_prompt(user_file, edit=False):
     prompt_file = 'edit_file_system_prompt' if edit else \
@@ -35,61 +40,18 @@ def generate(system_prompt, args, stream_cb):
     config.read(os.path.expanduser('~') + '/.gen/config')
     options = config[args.profile]
 
-    headers = {}
-    json_payload = {
-        'model': options['model'],
-        'stream': stream_cb is not None
-    }
+    Provider = None
 
-    endpoint = ''
+    match options['provider']: 
+        case 'ollama':
+            Provider = Ollama
+        case 'cerebras':
+            Provider = Cerebras
+        case _:
+            raise Exception(f'Invalid provider {_}')
 
-    if options['provider'] == 'ollama':
-        endpoint = options['endpoint'] + '/api/generate'
-        json_payload['system'] = system_prompt
-        json_payload['prompt'] = args.prompt
-    if options['provider'] == 'cerebras':
-        endpoint = 'https://api.cerebras.ai/v1/chat/completions'
-        headers['Authorization'] = f'Bearer {options["key"]}'
-        if options['effort']:
-            json_payload['reasoning_effort'] = options['effort']
-        json_payload['messages'] = [
-            {'role': 'system', 'content': system_prompt},
-            {'role': 'user', 'content': args.prompt},
-        ]
-
-    response = requests.post(
-        endpoint,
-        headers=headers,
-        json=json_payload,
-        stream=stream_cb is not None,
-    )
-
-    if not stream_cb:
-        return response.json()['response']
-
-    full_response = ''
-    for line in response.iter_lines():
-        if not line:
-            continue
-
-        if options['provider'] == 'cerebras':
-            line = line[6:]
-
-        data = json.loads(line)
-
-        if options['provider'] == 'cerebras':
-            choices = data.get('choices', [])
-            if len(choices) > 0:
-                content = choices[0].get('delta', {}).get('content', '')
-                full_response += content
-                stream_cb(content)
-
-        if options['provider'] == 'ollama':
-            if not data['done']:
-                full_response += data['response']
-                stream_cb(data['response'])
-
-    return full_response
+    provider = Provider(options)
+    return provider.generate(system_prompt, args, stream_cb)
 
 
 def process_file(args, file):
