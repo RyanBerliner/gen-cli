@@ -7,6 +7,7 @@ import configparser
 
 from gen.providers import (
     Cerebras,
+    Grok,
     Ollama,
 )
 
@@ -47,6 +48,8 @@ def generate(system_prompt, args, stream_cb):
             Provider = Ollama
         case 'cerebras':
             Provider = Cerebras
+        case 'grok':
+            Provider = Grok
         case _:
             raise Exception(f'Invalid provider {_}')
 

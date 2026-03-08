@@ -75,7 +75,8 @@ model = llama3.2:1b
 
 | Provider | Model    | Endpoint     | Key      | Effort   |
 |:---------|:---------|:-------------|:---------|:---------|
-| ollama   | required | required[^1] | n/a      | n/a      |
 | cerebras | required | n/a          | required | required |
+| grok     | required | n/a          | required | required |
+| ollama   | required | required[^1] | n/a      | n/a      |
 
 [^1]: Do not include the path. An example valid endpoint is http://localhost:8000
