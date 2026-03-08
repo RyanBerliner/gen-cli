@@ -44,17 +44,21 @@ def generate(system_prompt, args, stream_cb):
     Provider = None
 
     match options['provider']: 
-        case 'ollama':
-            Provider = Ollama
         case 'cerebras':
             Provider = Cerebras
         case 'grok':
             Provider = Grok
+        case 'ollama':
+            Provider = Ollama
         case _:
             raise Exception(f'Invalid provider {_}')
 
-    provider = Provider(options)
-    return provider.generate(system_prompt, args, stream_cb)
+    provider = Provider(
+        options.get('model'),
+        **{option: options.get(option) for option in ['key', 'effort', 'endpoint']}
+    )
+
+    return provider.generate(system_prompt, args.prompt, stream_cb)
 
 
 def process_file(args, file):
