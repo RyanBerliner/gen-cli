@@ -1,6 +1,6 @@
-# [gen]erate llm completions
+# [gen]erate LLM completions
 
-A basic CLI tool to generate llm completions. Read from stdin or files, write
+A basic CLI tool to generate LLM completions. Read from stdin or files, write
 to stdout or back to files.
 
 ## Basic Usage
@@ -26,14 +26,14 @@ chore: update runtime dependencies
 Ask about a file, or multiple files sequentially.
 
 ```
-$ gen "whats this commenting style called" program.py
+$ gen "what's this commenting style called" program.py
 Docstring
 ```
 
 Edit a file, or multiple files sequentially.
 
 ```
-$ gen -e "convert from % to f strings" program1.py program2.py
+$ gen -e "convert from % to f-strings" program1.py program2.py
 program1.py
 program2.py
 ```
@@ -42,9 +42,9 @@ program2.py
 
 1. **Clone this repo and alias ./cli.py to whatever command you wish to use.**
    `gen` is recommended and used in the examples in this readme. You will need
-   python to be installed, that is the only dependency.
+   Python to be installed, that is the only dependency.
 
-2. **Setup the required prompts.** These must live in `~/.gen` and you can
+2. **Set up the required prompts.** These must live in `~/.gen` and you can
    easily use the defaults by symlinking those found in this repo under
    `.gen/`. You can rewrite these as you see need, or just keep using the
    defaults.
@@ -72,7 +72,7 @@ endpoint = http://<ollama-endpoint>
 model = llama3.2:1b
 ```
 
-### Supported Provider Condifurations
+### Supported Provider Configurations
 
 | Provider | Model    | Endpoint     | Key      | Effort   |
 |:---------|:---------|:-------------|:---------|:---------|
