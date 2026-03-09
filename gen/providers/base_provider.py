@@ -3,12 +3,12 @@ import requests
 
 
 class BaseProvider:
-    # If the provider could any number of endpoints, the user is expected to
-    # provide an endpoint in their config (which is subsequently passed to the
-    # constructor here) and used alongside this endpoint path to create the
+    # If the provider could have any number of endpoints, the user is expected
+    # to provide an endpoint in their config (which is subsequently passed to
+    # the constructor here) and used alongside this endpoint path to create the
     # full endpoint. For providers with a single endpoint, no endpoint is
     # provided and the provider class should provide a single static property
-    # called endpoint, being the fully qualified url + path
+    # called endpoint, being the fully qualified URL + path
     endpoint_path = None
 
     def __init__(self, model, key=None, effort=None, endpoint=None):
