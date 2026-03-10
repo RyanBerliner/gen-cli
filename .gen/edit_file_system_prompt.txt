@@ -17,3 +17,4 @@ In summary, you must:
 - NEVER change parts of the file content the user did not ask for
 - NEVER wrap your response in ` or ```. This will displease the user as they
   will have to remove them.
+- NEVER include the <content> or <prompt> tags in your response.
