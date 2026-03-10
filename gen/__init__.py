@@ -6,7 +6,7 @@ import requests
 import configparser
 
 from gen.utils import noop
-from gen.prompt import get_file_system_prompt
+from gen.prompt import get_system_prompt
 from gen.providers import (
     Cerebras,
     Grok,
@@ -14,7 +14,7 @@ from gen.providers import (
 )
 
 
-def generate(system_prompt, args, stream_cb):
+def generate(system_prompt, args, stream_cb, additional_content=None):
     config = configparser.ConfigParser()
     # not sure why we have to manually expand the home path
     config.read(os.path.expanduser('~') + '/.gen/config')
@@ -37,14 +37,26 @@ def generate(system_prompt, args, stream_cb):
         endpoint=options.get('endpoint'),
     )
 
-    return provider.generate(system_prompt, args.prompt, stream_cb)
+    prompt = args.prompt
+    if additional_content:
+        prompt = args.prompt = \
+            f'<content>\n{additional_content}\n</content>\n' + \
+            f'<prompt>\n{prompt}\n</prompt>'
+
+    return provider.generate(system_prompt, prompt, stream_cb)
 
 
 def process_file(args, file):
+    system_prompt = get_system_prompt()
+    if args.edit:
+        system_prompt = get_edit_file_system_prompt()
+
+
     response = generate(
-        get_file_system_prompt(file, edit=args.edit),
+        system_prompt,
         args,
         stream_cb=noop if args.edit else output_token,
+        additional_content=file.read(),
     )
 
     if args.edit:

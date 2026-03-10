@@ -3,10 +3,7 @@
 import argparse
 import sys
 
-from gen.prompt import (
-    get_content_system_prompt,
-    get_system_prompt,
-)
+from gen.prompt import get_system_prompt
 from gen import (
     generate,
     output_token,
@@ -16,7 +13,7 @@ from gen import (
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         prog='gen',
-        description='[gen]erates llm completion',
+        description='[gen]erate LLM completions',
     )
 
     parser.add_argument('prompt')
@@ -27,13 +24,16 @@ if __name__ == '__main__':
 
     if len(args.files) == 0:
         system_prompt = get_system_prompt()
+        additional_content = None
+
         if not sys.stdin.isatty():
-            system_prompt = get_content_system_prompt(sys.stdin.read())
+            additional_content = sys.stdin.read()
 
         generate(
             system_prompt,
             args,
-            stream_cb=output_token
+            stream_cb=output_token,
+            additional_content=additional_content
         )
 
         sys.stdout.write('\n')
