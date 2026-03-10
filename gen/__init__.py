@@ -6,7 +6,7 @@ import requests
 import configparser
 
 from gen.utils import noop
-from gen.prompt import get_system_prompt
+from gen.prompt import get_system_prompt, get_edit_file_system_prompt
 from gen.providers import (
     Cerebras,
     Grok,
