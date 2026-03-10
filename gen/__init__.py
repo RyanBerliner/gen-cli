@@ -5,6 +5,8 @@ import sys
 import requests
 import configparser
 
+from gen.utils import noop
+from gen.prompt import get_file_system_prompt
 from gen.providers import (
     Cerebras,
     Grok,
@@ -12,36 +14,11 @@ from gen.providers import (
 )
 
 
-def get_file_system_prompt(user_file, edit=False):
-    prompt_file = 'edit_file_system_prompt' if edit else \
-            'file_system_prompt'
-
-    with open(os.path.expanduser(f'~/.gen/{prompt_file}.txt'), 'r') as file:
-        system_prompt = file.read()
-
-    system_prompt = system_prompt.replace('<file_name>', file.name)
-    return system_prompt.replace('<file_contents>', user_file.read())
-
-
-def get_system_prompt():
-    with open(os.path.expanduser('~/.gen/system_prompt.txt'), 'r') as file:
-        return file.read()
-
-
-def get_content_system_prompt(content):
-    with open(os.path.expanduser('~/.gen/content_system_prompt.txt'), 'r') as file:
-        system_prompt = file.read()
-
-    return system_prompt.replace('<content>', content)
-
-
 def generate(system_prompt, args, stream_cb):
     config = configparser.ConfigParser()
     # not sure why we have to manually expand the home path
     config.read(os.path.expanduser('~') + '/.gen/config')
     options = config[args.profile]
-
-    Provider = None
 
     match options['provider']: 
         case 'cerebras':
@@ -55,20 +32,19 @@ def generate(system_prompt, args, stream_cb):
 
     provider = Provider(
         options.get('model'),
-        **{option: options.get(option) for option in ['key', 'effort', 'endpoint']}
+        key=options.get('key'),
+        effort=options.get('effort'),
+        endpoint=options.get('endpoint'),
     )
 
     return provider.generate(system_prompt, args.prompt, stream_cb)
 
 
 def process_file(args, file):
-    def loading(_):
-        pass
-
     response = generate(
         get_file_system_prompt(file, edit=args.edit),
         args,
-        stream_cb=loading if args.edit else output_token,
+        stream_cb=noop if args.edit else output_token,
     )
 
     if args.edit:

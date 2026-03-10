@@ -3,10 +3,12 @@
 import argparse
 import sys
 
-from gen import (
-    generate,
+from gen.prompt import (
     get_content_system_prompt,
     get_system_prompt,
+)
+from gen import (
+    generate,
     output_token,
     process_file,
 )
