@@ -1,5 +1,4 @@
 import json
-import requests
 
 from gen.providers.base_provider import BaseProvider
 
