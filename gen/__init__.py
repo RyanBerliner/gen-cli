@@ -19,15 +19,15 @@ def generate(system_prompt, args, stream_cb, additional_content=None):
     config.read(os.path.expanduser('~') + '/.gen/config')
     options = config[args.profile]
 
-    match options['provider']: 
+    match options['provider']:
         case 'cerebras':
             Provider = Cerebras
         case 'grok':
             Provider = Grok
         case 'ollama':
             Provider = Ollama
-        case _:
-            raise Exception(f'Invalid provider {_}')
+        case unknown:
+            raise Exception(f'Invalid provider {unknown}')
 
     provider = Provider(
         options.get('model'),
@@ -49,7 +49,6 @@ def process_file(args, file):
     system_prompt = get_system_prompt()
     if args.edit:
         system_prompt = get_edit_file_system_prompt()
-
 
     response = generate(
         system_prompt,

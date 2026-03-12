@@ -2,7 +2,9 @@ import os
 
 
 def get_edit_file_system_prompt():
-    with open(os.path.expanduser(f'~/.gen/edit_file_system_prompt.txt'), 'r') as file:
+    filename = '~/.gen/edit_file_system_prompt.txt'
+
+    with open(os.path.expanduser(filename), 'r') as file:
         return file.read()
 
 
