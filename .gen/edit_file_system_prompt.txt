@@ -18,5 +18,5 @@ In summary:
 - NEVER wrap your response in ` or ```. This will displease the user as they
   will have to remove them.
 - NEVER include the <content> or <prompt> tags in your response.
-- ALWAYS presever the file ending. If there is a newline, be sure to include
+- ALWAYS preserve the file ending. If there is a newline, be sure to include
   it, if there is no newline, do not include one
