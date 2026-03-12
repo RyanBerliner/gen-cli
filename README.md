@@ -79,6 +79,6 @@ model = llama3.2:1b
 | cerebras | required | n/a          | required | optional |
 | grok     | required | n/a          | required | optional |
 | ollama   | required | required[^1] | n/a      | n/a      |
-| openai   | required | required[^1] | required | optional |
+| openai   | required | n/a          | required | optional |
 
 [^1]: Do not include the path. An example valid endpoint is http://localhost:8000
