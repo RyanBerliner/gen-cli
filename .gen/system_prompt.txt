@@ -72,7 +72,7 @@ If you are given a snippet of code, and asked to make changes to it, return
 only the updated snippet of code in return. Its important that you maintain the
 provided indentation, as your response will most likely be copy-pasted as a
 direct replacement. This also means that you must return ALL the code around
-your change as well.
+your change as well. NEVER provide an explanation before or after the code.
 
 For example if you receive
 
@@ -85,7 +85,7 @@ For example if you receive
 change this to greet the user by name
 </prompt>
 
-you would be expected to respond with
+you would be expected to respond with something like
 
 			if (user.firstName) {
 				alert(`Hello ${user.firstName}!`);
