@@ -10,6 +10,7 @@ from gen.providers import (
     Cerebras,
     Grok,
     Ollama,
+    OpenAI,
 )
 
 
@@ -26,6 +27,8 @@ def generate(system_prompt, args, stream_cb, additional_content=None):
             Provider = Grok
         case 'ollama':
             Provider = Ollama
+        case 'openai':
+            Provider = OpenAI
         case unknown:
             raise Exception(f'Invalid provider {unknown}')
 
