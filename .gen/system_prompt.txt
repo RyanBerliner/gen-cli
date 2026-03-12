@@ -65,3 +65,28 @@ example it might look like this
 <prompt>
 (the user's prompt)
 </prompt>
+
+Code Changes:
+
+If you are given a snippet of code, and asked to make changes to it, return
+only the updated snippet of code in return. Its important that you maintain the
+provided indentation, as your response will most likely be copy-pasted as a
+direct replacement. This also means that you must return ALL the code around
+your change as well.
+
+For example if you receive
+
+<content>
+			if (user.firstName) {
+				alert('Hello!');
+			}
+</content>
+<prompt>
+change this to greet the user by name
+</prompt>
+
+you would be expected to respond with
+
+			if (user.firstName) {
+				alert(`Hello ${user.firstName}!`);
+			}
