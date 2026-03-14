@@ -12,11 +12,30 @@ class Differ:
         self.start_contents = file.readlines()
         self.end_contents = ''
 
-    def show_diff(self):
+    def show_diff(self, final=True):
         end_contents = [f'{line}\n' for line in self.end_contents.split('\n')]
         diff = unified_diff(self.start_contents, end_contents)
 
-        for d in diff:
+        # if this is the not the final diff we should assume that the last
+        # chunk of subtracted lines is probably because we haven't gotten there
+        # yet. so, lets hide the last group of subtracted lines and anything
+        # after it. this does mean the the diff numbers are going to be wrong,
+        # and some this won't always be the optimal strategy, but generally
+        # it'll show a more comprehendible diff streaming in that doesnt look
+        # like the entire thing is being rewritten. its not about showing
+        # correct snapshots, its about showing a reasonble timeline of
+        # progress as tokens stream in
+        filtered_diff = list(diff)
+        if not final and len(filtered_diff):
+            filtered_diff.reverse()
+            first = filtered_diff[0]
+
+            while first and first.startswith('+') or first.startswith('-'):
+                first = filtered_diff.pop(0)
+
+            filtered_diff.reverse()
+
+        for d in filtered_diff:
             if d.startswith('+++') or d.startswith('---'):
                 sys.stdout.write(d)
             elif d.startswith('+'):
@@ -44,7 +63,7 @@ class Differ:
         # move to top left
         sys.stdout.write('\x1b[0;0H')
 
-        self.show_diff()
+        self.show_diff(final=False)
 
         # show cursor
         sys.stdout.write('\x1b[?25h')
