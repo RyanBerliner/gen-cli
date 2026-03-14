@@ -23,4 +23,7 @@ if __name__ == '__main__':
 
     for token in update_stream:
         differ.output_diff(token)
-        time.sleep(0.025)
+        tokens_per_second = 700
+        time.sleep(1 / tokens_per_second)
+
+    differ.show_diff()

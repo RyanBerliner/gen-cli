@@ -68,7 +68,8 @@ def process_file(args, file):
     if args.edit:
         doit = args.force
         if not args.force:
-            doit = user_confirmation(f'\nSave changes to {file.name}?')
+            differ.show_diff()
+            doit = user_confirmation(f'\nConfirm changes to {file.name}')
 
         if doit:
             file.seek(0)
