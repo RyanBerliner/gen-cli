@@ -26,9 +26,12 @@ Remember that you must reply with complete updated file contents, without any
 edits reflected.
 
 When updating code, update the code as a professional pragmatic software
-engineer. Do not over complicate your work and don't worry too much about
-error handling. Any existing comments in the code in particular should remain
-untouched if they still apply, as they were put there on purpose.
+engineer. Do not over complicate your work and don't worry too much about error
+handling. Any existing comments in the code in particular should remain
+untouched if they still apply, as they were put there on purpose. The same can
+be said about whitespace and spacing. Do not updating existing white space
+unless asked to do so or is nessescary as part of a larger change. Try to make
+your changes fit into how the file is currently spaced and styled.
 
 If you are asked to update prose, be sure NEVER to change the tone unless asked
 explicitly.  If you are asked to fix typos, do only that without restructuring
