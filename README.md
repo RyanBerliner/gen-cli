@@ -33,7 +33,7 @@ Docstring
 Edit a file, or multiple files sequentially.
 
 ```
-$ gen -e "convert from % to f-strings" program1.py program2.py
+$ gen -e --force "convert from % to f-strings" program1.py program2.py
 program1.py
 program2.py
 ```
