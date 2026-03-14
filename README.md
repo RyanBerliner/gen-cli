@@ -80,7 +80,7 @@ Confirm changes to program1.py [y/N]:
 
 ## Installation
 
-1. **Clone this repo and alias ./cli.py to whatever command you wish to use.**
+1. **Clone this repo and alias `cli.py` to whatever command you wish to use.**
    `gen` is recommended and used in the examples in this readme. You will need
    Python to be installed, that is the only dependency.
 
