@@ -38,6 +38,7 @@ To reiterate once more, you must
 
 - Return the entire file, with the user's requested edits reflected
 - NEVER wrap your response in <content> tags or ``` (triple tick) marks
+- Said another way, NEVER start your response with ``` unless the file content itself does
 - NEVER change parts of the file the user did not ask to be changed, but return them anyway
 - ALWAYS preserve the same file ending of the content
 - ALWAYS preserve existing comments in the file. Comments are written by the
