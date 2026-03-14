@@ -30,12 +30,52 @@ $ gen "what's this commenting style called" program.py
 Docstring
 ```
 
-Edit a file, or multiple files sequentially.
+Edit a file, or multiple files sequentially. Review the diff before confirming,
+or use `--force` to write without review.
 
 ```
-$ gen -e --force "convert from % to f-strings" program1.py program2.py
-program1.py
-program2.py
+$ gen -e "extract the ansi codes into named constants so this reads better" program1.py
+---
++++
+@@ -7,6 +7,12 @@
+     GREEN = "\x1b[32m"
+     RED = "\x1b[31m"
+     RESET = "\x1b[0m"
++    ENTER_ALT_SCREEN = '\x1b[?1049h'
++    HIDE_CURSOR = '\x1b[?25l'
++    CLEAR_TO_END = '\x1b[?1049h'
++    MOVE_CURSOR_TOP_LEFT = '\x1b[0;0H'
++    SHOW_CURSOR = '\x1b[?25h'
++    LEAVE_ALT_SCREEN = '\x1b[?1049l'
+
+     def __init__(self, file):
+         self.start_contents = file.readlines()
+@@ -55,17 +61,17 @@
+         # scrollback history, especially in tmux
+
+         # enter alt screen
+-        sys.stdout.write('\x1b[?1049h')
++        sys.stdout.write(self.ENTER_ALT_SCREEN)
+         # hide cursor
+-        sys.stdout.write('\x1b[?25l')
++        sys.stdout.write(self.HIDE_CURSOR)
+         # clear to the end
+-        sys.stdout.write('\x1b[?1049h')
++        sys.stdout.write(self.CLEAR_TO_END)
+         # move to top left
+-        sys.stdout.write('\x1b[0;0H')
++        sys.stdout.write(self.MOVE_CURSOR_TOP_LEFT)
+
+         self.show_output(final=False)
+
+         # show cursor
+-        sys.stdout.write('\x1b[?25h')
++        sys.stdout.write(self.SHOW_CURSOR)
+         # leave alt screen
+-        sys.stdout.write('\x1b[?1049l')
++        sys.stdout.write(self.LEAVE_ALT_SCREEN)
+
+Confirm changes to program1.py [y/N]:
 ```
 
 ## Installation
