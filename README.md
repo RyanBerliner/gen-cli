@@ -1,7 +1,9 @@
 # [gen]erate LLM completions
 
-A basic CLI tool to generate LLM completions. Read from stdin or files, write
-to stdout or back to files.
+A basic CLI wrapper of LLM providers with an interface to review suggested file
+diffs before applying them. Read the [manifesto](MANIFESTO.md) for an idea of
+where a potential roadmap would lead. I have no formal plans.
+
 
 ## Basic Usage
 
