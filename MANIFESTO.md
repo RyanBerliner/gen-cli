@@ -3,7 +3,7 @@ value. If you don't believe this, you will be inclined to bypass knowledge &
 understanding whenever possible. If the future doesn't deliver, you'll be both
 [tethered][0] and helpless.
 
-So it stands to think you must assume no distopian future exists, and instead
+So it stands to think you must assume no dystopian future exists, and instead
 seek tools that **increase** your knowledge & understanding. This is a form of
 [pascals wager.][1]
 
