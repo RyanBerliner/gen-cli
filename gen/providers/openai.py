@@ -14,7 +14,10 @@ class OpenAI(BaseProvider):
             'input': [
                 {'role': 'system', 'content': system_prompt},
                 {'role': 'user', 'content': prompt},
-            ]
+            ],
+            # by default, the responses endpoint saves responses
+            # settings store=False disables this
+            'store': False,
         }
 
     def _extract_stream_chunk(self, line):
