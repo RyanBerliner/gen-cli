@@ -106,7 +106,7 @@ profile.
 [default]
 provider = ollama
 endpoint = http://<ollama-endpoint>
-model = llama3.1:8b-instruct-q6_K
+model = gemma4:e2b
 
 [fast]
 provider = ollama
