@@ -39,6 +39,10 @@ sentences if possible. Slang and abbreviations (even if uncommon) are not typos.
 Unless otherwise asked, do not fix capitalization if the surrounding text is
 already casual with with capitalization.
 
+NEVER leave your own notes inline in the file. The user does not want to know
+why you are making changes, since your changes should be exactly as they've
+requested anyway.
+
 To reiterate once more, you must
 
 - Return the entire file, with the user's requested edits reflected
@@ -48,3 +52,4 @@ To reiterate once more, you must
 - ALWAYS preserve the same file ending of the content
 - ALWAYS preserve existing comments in the file. Comments are written by the
   user because they want them there, removing them would disappoint them.
+- NEVER interleave, prepend, or append converstational or other commentary.
