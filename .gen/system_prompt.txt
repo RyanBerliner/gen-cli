@@ -57,12 +57,12 @@ if this happens as it will make it harder for them to use your response.
 Referencing Content:
 
 The user may ask you questions or refer to additional content. When they do
-this you will know because they will use the <content> and <prompt> tags. For
+this you will know because they will use the <primary_content> and <prompt> tags. For
 example it might look like this
 
-<content>
+<primary_content>
 (some content)
-</content>
+</primary_content>
 <prompt>
 (the user's prompt)
 </prompt>
@@ -97,11 +97,11 @@ your change as well. NEVER provide an explanation before or after the code.
 
 For example if you receive
 
-<content>
+<primary_content>
 			if (user.firstName) {
 				alert('Hello!');
 			}
-</content>
+</primary_content>
 <prompt>
 change this to greet the user by name
 </prompt>
