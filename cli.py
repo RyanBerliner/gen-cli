@@ -17,13 +17,13 @@ if __name__ == '__main__':
     )
 
     parser.add_argument('prompt')
-    parser.add_argument('files', nargs='*', type=argparse.FileType('r+'))
+    parser.add_argument('file', nargs='?', type=argparse.FileType('r+'))
     parser.add_argument('-e', '--edit', action='store_true')
     parser.add_argument('-f', '--force', action='store_true')
     parser.add_argument('--profile', default='default')
     args = parser.parse_args()
 
-    if len(args.files) == 0:
+    if args.file is None:
         system_prompt = get_system_prompt()
         additional_content = None
 
@@ -40,5 +40,4 @@ if __name__ == '__main__':
         sys.stdout.write('\n')
         exit(0)
 
-    for file in args.files:
-        process_file(args, file)
+    process_file(args, args.file)

@@ -32,8 +32,8 @@ $ gen "what's this commenting style called" program.py
 Docstring
 ```
 
-Edit a file, or multiple files sequentially. Review the diff before confirming,
-or use `--force` to write without review.
+Edit a file. Review the diff before confirming, or use `--force` to write
+without review.
 
 ```
 $ gen -e "extract the ansi codes into named constants so this reads better" program1.py
