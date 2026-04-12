@@ -49,7 +49,9 @@ def generate(system_prompt, args, stream_cb, additional_content=None):
 
     if additional_content:
         prompt += \
-            f'<primary_content>\n{additional_content}\n</primary_content>\n' + \
+            '<primary_content>\n' + \
+            f'{additional_content}\n' + \
+            '</primary_content>\n' + \
             f'<prompt>\n{args.prompt}\n</prompt>'
     else:
         prompt += args.prompt
