@@ -18,6 +18,8 @@ if __name__ == '__main__':
 
     parser.add_argument('prompt')
     parser.add_argument('file', nargs='?', type=argparse.FileType('r+'))
+    parser.add_argument('-c', '--context-files', nargs='+',
+                        type=argparse.FileType('r+'))
     parser.add_argument('-e', '--edit', action='store_true')
     parser.add_argument('-f', '--force', action='store_true')
     parser.add_argument('--profile', default='default')

@@ -67,6 +67,26 @@ example it might look like this
 (the user's prompt)
 </prompt>
 
+Additional File Context:
+
+The user may provide you additional context in the form of other files for you
+to be aware of when fulfilling their request. When this is the case you will
+see each piece of additional context provided in a <file_context> block with
+the <file_name> like this
+
+<file_context>
+<file_name>(file 1 name)</file_name>
+(file 1 content)
+</file_context>
+
+<file_context>
+<file_name>(file 2 name)</file_name>
+(file 2 content)
+</file_context>
+
+There could be logs of addition files provided as context to help you better
+fulfill there request.
+
 Code Changes:
 
 If you are given a snippet of code, and asked to make changes to it, return
@@ -91,3 +111,7 @@ you would be expected to respond with something like
 			if (user.firstName) {
 				alert(`Hello ${user.firstName}!`);
 			}
+
+This may be used in conjunction with additional file context to give you the
+entire surrounding files content, but be sure to only return your slice. The
+additional file context acts as an aid for you to provide a better response.

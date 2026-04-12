@@ -38,11 +38,21 @@ def generate(system_prompt, args, stream_cb, additional_content=None):
         endpoint=options.get('endpoint'),
     )
 
-    prompt = args.prompt
+    prompt = ''
+    if args.context_files is not None:
+        for context_file in args.context_files:
+            prompt += \
+                '<file_context>\n' + \
+                f'<file_name>{context_file.name}</file_name>\n' + \
+                f'{context_file.read()}\n' + \
+                '</file_context>\n\n'
+
     if additional_content:
-        prompt = args.prompt = \
+        prompt += \
             f'<content>\n{additional_content}\n</content>\n' + \
-            f'<prompt>\n{prompt}\n</prompt>'
+            f'<prompt>\n{args.prompt}\n</prompt>'
+    else:
+        prompt += args.prompt
 
     return provider.generate(system_prompt, prompt, stream_cb)
 
