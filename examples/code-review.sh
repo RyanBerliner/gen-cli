@@ -25,12 +25,12 @@ provide feedback if you dont see anything worth noting. I don't want nit picks.
 Also please don't suggest changes on code that wasn't changed in the diff.
 
 If you do have feedback to give, please output your feedback by first quoting
-code that you are refering to, and then providing your concise feedback on that
-code as simply as possible. If you have a suggested fix, you can include an
-explanation of what you'd like to see with short code snippets or short pseudo
-code... but don't babbly on or provide giant pieces of code.
+code that you are referring to inside a \`\`\` block, and then providing your
+feedback on that code block directly after. If you have a suggested fix, you
+can include an explanation of what you'd like to see with short code snippets
+or short pseudo code... but don't babbly on or provide giant pieces of code.
 
 EOF
 )
 
-gen "$REVIEW_INSTRUCTIONS\n\n$(git show $1)" -c $(git diff --name-only $1)
+gen "$REVIEW_INSTRUCTIONS\n\n$(git show "$1")" -c $(git diff --name-only "$1")
