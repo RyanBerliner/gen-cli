@@ -1,12 +1,14 @@
 #!/bin/bash
 
-# This exaple script performs a code review on a commit range, such as
+# This example script performs a code review on a commit range, such as
 #
 # Last 5 commits
 # code-review.sh HEAD~5..HEAD
 #
-# Changes on from a branch (ie master)
+# Changes on a branch (ie from master)
 # code-review.sh master..HEAD
+#
+# .. any commit range will suffice.
 
 REVIEW_INSTRUCTIONS=$(cat <<'EOF'
 
@@ -21,6 +23,12 @@ the full files as additional context. I would like you to review the code for
 If there is nothing to note, say that it looks good... you do not NEED to
 provide feedback if you dont see anything worth noting. I don't want nit picks.
 Also please don't suggest changes on code that wasn't changed in the diff.
+
+If you do have feedback to give, please output your feedback by first quoting
+code that you are refering to, and then providing your concise feedback on that
+code as simply as possible. If you have a suggested fix, you can include an
+explanation of what you'd like to see with short code snippets or short pseudo
+code... but don't babbly on or provide giant pieces of code.
 
 EOF
 )
