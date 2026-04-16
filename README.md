@@ -4,6 +4,8 @@ A basic CLI wrapper of LLM providers with an interface to review suggested file
 diffs before applying them. Read the [manifesto](MANIFESTO.md) for an idea of
 where a potential roadmap would lead. I have no formal plans.
 
+See basic usage below or look at a few [examples.](examples/)
+
 
 ## Basic Usage
 
@@ -13,7 +15,7 @@ Generate a response to a prompt.
 
 ```
 $ gen "show me an example of python dict comprehension"
-{key: value for key, value in {'a': 1, 'b': 2}.items()} 
+{key: value for key, value in {'a': 1, 'b': 2}.items()}
 ```
 
 Add context from stdin
@@ -36,48 +38,29 @@ Edit a file. Review the diff before confirming, or use `--force` to write
 without review.
 
 ```
-$ gen -e "extract the ansi codes into named constants so this reads better" program1.py
+$ gen -e "use placeholders instead of f strings" program1.py
 ---
 +++
-@@ -7,6 +7,12 @@
-     GREEN = "\x1b[32m"
-     RED = "\x1b[31m"
-     RESET = "\x1b[0m"
-+    ENTER_ALT_SCREEN = '\x1b[?1049h'
-+    HIDE_CURSOR = '\x1b[?25l'
-+    CLEAR_TO_END = '\x1b[?1049h'
-+    MOVE_CURSOR_TOP_LEFT = '\x1b[0;0H'
-+    SHOW_CURSOR = '\x1b[?25h'
-+    LEAVE_ALT_SCREEN = '\x1b[?1049l'
+@@ -1,7 +1,8 @@
+ def user_confirmation(question):
+-    answer = input(f'{question} [y/N]: ')
++    answer = input('{} [y/N]: '.format(question))
 
-     def __init__(self, file):
-         self.start_contents = file.readlines()
-@@ -55,17 +61,17 @@
-         # scrollback history, especially in tmux
+     while answer.lower() not in {'y', 'n'}:
+         return user_confirmation(question)
 
-         # enter alt screen
--        sys.stdout.write('\x1b[?1049h')
-+        sys.stdout.write(self.ENTER_ALT_SCREEN)
-         # hide cursor
--        sys.stdout.write('\x1b[?25l')
-+        sys.stdout.write(self.HIDE_CURSOR)
-         # clear to the end
--        sys.stdout.write('\x1b[?1049h')
-+        sys.stdout.write(self.CLEAR_TO_END)
-         # move to top left
--        sys.stdout.write('\x1b[0;0H')
-+        sys.stdout.write(self.MOVE_CURSOR_TOP_LEFT)
-
-         self.show_output(final=False)
-
-         # show cursor
--        sys.stdout.write('\x1b[?25h')
-+        sys.stdout.write(self.SHOW_CURSOR)
-         # leave alt screen
--        sys.stdout.write('\x1b[?1049l')
-+        sys.stdout.write(self.LEAVE_ALT_SCREEN)
+     return answer == 'y'
 
 Confirm changes to program1.py [y/N]:
+```
+
+Provide as many files as you need for added context.
+
+
+```
+$ gen -e "any edge cases i havent thought to test?" test_program1.py -c program1.py program1_dep.py
+
+[... and maybe you get a useful response]
 ```
 
 ## Installation
