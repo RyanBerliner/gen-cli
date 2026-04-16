@@ -1,5 +1,5 @@
 " Ask questions about a file, or a selection in visual mode
-nnoremap <C-g> :w !gen "
+nnoremap <C-g> :!gen "" %<Left><Left><Left>
 vnoremap <C-g> :w !gen "" -c %<Left><Left><Left><Left><Left><Left>
 
 " Replace the entire file (upon confirming the diff), or replace just the
