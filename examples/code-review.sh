@@ -21,14 +21,14 @@ the full files as additional context. I would like you to review the code for
 - Typos, either in variable names, comments, or prose
 
 If there is nothing to note, say that it looks good... you do not NEED to
-provide feedback if you dont see anything worth noting. I don't want nit picks.
+provide feedback if you don't see anything worth noting. I don't want nitpicks.
 Also please don't suggest changes on code that wasn't changed in the diff.
 
 If you do have feedback to give, please output your feedback by first quoting
 code that you are referring to inside a \`\`\` block, and then providing your
 feedback on that code block directly after. If you have a suggested fix, you
 can include an explanation of what you'd like to see with short code snippets
-or short pseudo code... but don't babbly on or provide giant pieces of code.
+or short pseudo code... but don't babble on or provide giant pieces of code.
 
 EOF
 )
