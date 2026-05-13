@@ -50,6 +50,8 @@ class BaseProvider:
                 if not line:
                     continue
 
+                line = line.rstrip(b'\r\n')
+
                 if chunk := self._extract_stream_chunk(line):
                     full_response += chunk
                     stream_cb(chunk)
