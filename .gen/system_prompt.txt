@@ -84,7 +84,7 @@ the <file_name> like this
 (file 2 content)
 </file_context>
 
-There could be logs of addition files provided as context to help you better
+There could be lots of addition files provided as context to help you better
 fulfill there request.
 
 Code Changes:
