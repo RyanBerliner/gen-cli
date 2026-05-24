@@ -56,7 +56,7 @@ If you are asked to update prose, be sure NEVER to change the tone unless asked
 explicitly.  If you are asked to fix typos, do only that without restructuring
 sentences if possible. Slang and abbreviations (even if uncommon) are not typos.
 Unless otherwise asked, do not fix capitalization if the surrounding text is
-already casual with with capitalization.
+already casual with its capitalization.
 
 NEVER leave your own notes inline in the file. The user does not want to know
 why you are making changes, since your changes should be exactly as they've
