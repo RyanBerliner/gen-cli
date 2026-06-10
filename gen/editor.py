@@ -10,29 +10,29 @@ def line_hash(id, content):
 
 
 def content_to_line_tree(content):
-    # id, content, next
-    prev = root = [-1, '', None]
+    # id, content, hash, next
+    prev = root = [-1, '', line_hash(-1, ''), None]
     # the root node has an additional 4th index that stores the max id so we
     # can auto increment when new nodes are added later
     root.append(root[0])
 
     for line in content.splitlines(keepends=True):
-        root[3] += 1
-        curr = [root[3], line, None]
-        prev[2] = curr
+        root[4] += 1
+        curr = [root[4], line, line_hash(root[4], line), None]
+        prev[3] = curr
         prev = curr
 
     return root
 
 
-def complete_line_tree(root):
-    ret = f'{line_hash(*root[:2])}|{root[1]}'
-    curr = root[2]
+def debug_line_tree(root):
+    ret = f'{root[2]}|{root[1]}'
+    curr = root[3]
 
     while curr is not None:
         # remove the trailing newline so we dont get double newlines
-        ret += f'\n{line_hash(*curr[:2])}|{curr[1].rstrip()}'
-        curr = curr[2]
+        ret += f'\n{curr[2]}|{curr[1].rstrip()}'
+        curr = curr[3]
 
     return ret
 
@@ -40,13 +40,13 @@ def complete_line_tree(root):
 def line_tree_to_content(root, with_hashes=False):
     # TODO: when delete nodes are in place this will filter them out
     ret = ''
-    curr = root[2]
+    curr = root[3]
 
     while curr is not None:
         if with_hashes:
-            ret += f'{line_hash(*curr[:2])}|{curr[1]}'
+            ret += f'{curr[2]}|{curr[1]}'
         else:
             ret += curr[1]
-        curr = curr[2]
+        curr = curr[3]
 
     return ret
