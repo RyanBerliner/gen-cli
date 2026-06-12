@@ -50,3 +50,32 @@ def line_tree_to_content(root, with_hashes=False):
         curr = curr[3]
 
     return ret
+
+
+def insert_new_content_after_line(new_content, line, root):
+    curr = root
+
+    while curr is not None and curr[2] != line:
+        curr = curr[3]
+
+    assert curr is not None, \
+        f'Unable to find the reference line hash {line}'
+
+    # we should make sure the last line ends in a newline
+    if curr[1].rstrip('\n') == curr[1]:
+        curr[1] += '\n'
+
+    og_next = curr[3]
+    prev = curr
+
+    for content in new_content.splitlines(keepends=True):
+        root[4] += 1
+        curr = [root[4], content, line_hash(root[4], content), None]
+        prev[3] = curr
+        prev = curr
+
+    # we should make sure the last line ends in a newline
+    if prev[1].rstrip('\n') == prev[1] and og_next is not None:
+        prev[1] += '\n'
+
+    prev[3] = og_next
