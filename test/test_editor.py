@@ -5,6 +5,8 @@ from gen.editor import (
     debug_line_tree,
     line_tree_to_content,
     insert_new_content_after_line,
+    delete_content,
+    update_content,
 )
 
 
@@ -90,14 +92,77 @@ class EditorTest(TestCase):
         # print(line_tree_to_content(tree, with_hashes=True))
         insert_new_content_after_line('line 1', 'a993fd6', tree)
 
-        # notice that there is no newline inserted after "line 1" since its the
-        # last line anyway
         self.assertEqual(
             line_tree_to_content(tree),
             (
                 '  lorem\n'
                 'ipsum \n'
                 '\tdolor amet  \n'
-                'line 1'
+                'line 1\n'
+            )
+        )
+
+    def test_delete_content_single_line(self):
+        tree = content_to_line_tree('  lorem\nipsum \n\tdolor amet  ')
+        # print(line_tree_to_content(tree, with_hashes=True))
+        delete_content('b090a6c', 'b090a6c', tree)
+
+        self.assertEqual(
+            line_tree_to_content(tree),
+            (
+                '  lorem\n'
+                '\tdolor amet  '
+            )
+        )
+
+    def test_delete_content_multiple_lines(self):
+        tree = content_to_line_tree('  lorem\nipsum \n\tdolor amet  ')
+        # print(line_tree_to_content(tree, with_hashes=True))
+        delete_content('b090a6c', 'a993fd6', tree)
+
+        self.assertEqual(
+            line_tree_to_content(tree),
+            '  lorem\n'
+        )
+
+    def test_update_single_line(self):
+        tree = content_to_line_tree('  lorem\nipsum \n\tdolor amet  ')
+        # print(line_tree_to_content(tree, with_hashes=True))
+        update_content('b090a6c', 'b090a6c', 'testing', tree)
+
+        self.assertEqual(
+            line_tree_to_content(tree),
+            (
+                '  lorem\n'
+                'testing\n'
+                '\tdolor amet  '
+            )
+        )
+
+    def test_update_multiple_lines_1(self):
+        tree = content_to_line_tree('  lorem\nipsum \n\tdolor amet  ')
+        # print(line_tree_to_content(tree, with_hashes=True))
+        update_content('b090a6c', 'a993fd6', 'testing', tree)
+
+        self.assertEqual(
+            line_tree_to_content(tree),
+            (
+                '  lorem\n'
+                'testing\n'
+            )
+        )
+
+    def test_update_multiple_lines_2(self):
+        tree = content_to_line_tree('  lorem\nipsum \n\tdolor amet  ')
+        # print(line_tree_to_content(tree, with_hashes=True))
+        update_content('b090a6c', 'a993fd6', 'line 1\nline 2\nline 3', tree)
+
+        self.assertEqual(
+            line_tree_to_content(tree),
+            (
+                '  lorem\n'
+                'line 1\n'
+                'line 2\n'
+                'line 3\n'
             )
         )
