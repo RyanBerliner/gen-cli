@@ -91,7 +91,7 @@ class HashDiffer:
         self.applied_ops_count = 0
         self.ops_content = ''
 
-    def show_diff(self):
+    def show_diff(self, final=True):
         ops = self.ops_content.splitlines()
         valid_ops = []
         for op in ops:
@@ -101,7 +101,7 @@ class HashDiffer:
             except Exception:
                 continue
 
-        if len(valid_ops) <= self.applied_ops_count:
+        if not final and len(valid_ops) <= self.applied_ops_count:
             return
 
         for op in valid_ops[self.applied_ops_count:]:
@@ -150,7 +150,7 @@ class HashDiffer:
         # move to top left
         sys.stdout.write('\x1b[0;0H')
 
-        self.show_diff()
+        self.show_diff(final=False)
 
         # show cursor
         sys.stdout.write('\x1b[?25h')
