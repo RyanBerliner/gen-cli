@@ -2,9 +2,14 @@ import os
 import sys
 import configparser
 
-from gen.differ import Differ
+from gen.differ import Differ, HashDiffer
+from gen.editor import content_to_line_tree, line_tree_to_content
 from gen.utils import user_confirmation
-from gen.prompt import get_system_prompt, get_edit_file_system_prompt
+from gen.prompt import (
+    get_edit_file_system_prompt,
+    get_edit_file_system_prompt_hash,
+    get_system_prompt,
+)
 from gen.providers import (
     Cerebras,
     Grok,
@@ -61,30 +66,43 @@ def generate(system_prompt, args, stream_cb, additional_content=None):
 
 def process_file(args, file):
     system_prompt = get_system_prompt()
+
     if args.edit:
         system_prompt = get_edit_file_system_prompt()
+    if args.experimental_edit:
+        system_prompt = get_edit_file_system_prompt_hash()
 
-    differ = Differ(file)
-    # should probably not read the file twice like this
-    file.seek(0)
+    is_editting = args.edit or args.experimental_edit
+
+    content = file.read()
+    differ = HashDiffer(content) if args.experimental_edit else Differ(content)
+
+    if args.experimental_edit:
+        tree = content_to_line_tree(content)
+        tree_content = line_tree_to_content(tree, with_hashes=True)
+        content = tree_content
 
     response = generate(
         system_prompt,
         args,
-        stream_cb=differ.output_diff if args.edit else output_token,
-        additional_content=file.read(),
+        stream_cb=differ.output_diff if is_editting else output_token,
+        additional_content=content,
     )
 
-    if args.edit:
+    if is_editting:
         doit = args.force
         if not args.force:
             differ.show_diff()
             doit = user_confirmation(f'\nConfirm changes to {file.name}')
 
         if doit:
+            new_content = response if args.edit else \
+                    line_tree_to_content(differ.tree)
+
             file.seek(0)
-            file.write(response)
+            file.write(new_content)
             file.truncate()
+
             sys.stdout.write(file.name)
         else:
             sys.stdout.write('No changes written')

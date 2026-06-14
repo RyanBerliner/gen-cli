@@ -43,6 +43,11 @@ def debug_line_tree(root):
 
 def line_tree_to_content(root, with_hashes=False):
     ret = ''
+
+    # if we are showing hashes, we should show the start hash too
+    if with_hashes:
+        ret += f'{root[2]}|{root[1]}\n'
+
     curr = root[3]
 
     skip_next = 0
@@ -79,7 +84,10 @@ def insert_new_content_after_line(new_content, line, root):
         f'Unable to find the reference line hash {line}'
 
     # we should make sure the last line ends in a newline
-    if not isinstance(new_content, int) and curr[1].rstrip('\n') == curr[1]:
+    # if you are inserting after a line that was dleeted, the content will
+    # be an int... we might wnt to check this a bit nicer
+    if not isinstance(new_content, int) and \
+            (not isinstance(curr[1], int) and curr[1].rstrip('\n') == curr[1]):
         curr[1] += '\n'
 
     og_next = curr[3]

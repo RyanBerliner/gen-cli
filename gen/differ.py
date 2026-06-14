@@ -1,6 +1,15 @@
+import json
 import sys
 
 from difflib import unified_diff
+
+from .editor import (
+    content_to_line_tree,
+    delete_content,
+    insert_new_content_after_line,
+    line_tree_to_content,
+    update_content,
+)
 
 
 class Differ:
@@ -8,8 +17,8 @@ class Differ:
     RED = "\x1b[31m"
     RESET = "\x1b[0m"
 
-    def __init__(self, file):
-        self.start_contents = file.readlines()
+    def __init__(self, file_content):
+        self.start_contents = file_content.splitlines(keepends=True)
         self.end_contents = ''
 
     def show_diff(self, final=True):
@@ -64,6 +73,84 @@ class Differ:
         sys.stdout.write('\x1b[0;0H')
 
         self.show_diff(final=False)
+
+        # show cursor
+        sys.stdout.write('\x1b[?25h')
+        # leave alt screen
+        sys.stdout.write('\x1b[?1049l')
+
+
+class HashDiffer:
+    GREEN = "\x1b[32m"
+    RED = "\x1b[31m"
+    RESET = "\x1b[0m"
+
+    def __init__(self, file_contents):
+        self.start_contents = file_contents.splitlines(keepends=True)
+        self.tree = content_to_line_tree(file_contents)
+        self.applied_ops_count = 0
+        self.ops_content = ''
+
+    def show_diff(self):
+        ops = self.ops_content.splitlines()
+        valid_ops = []
+        for op in ops:
+            try:
+                valid_op = json.loads(op)
+                valid_ops.append(valid_op)
+            except Exception:
+                continue
+
+        if len(valid_ops) <= self.applied_ops_count:
+            return
+
+        for op in valid_ops[self.applied_ops_count:]:
+            op_type = op.get('op')
+            start = op.get('start')
+            end = op.get('end')
+            new_content = op.get('newContent')
+
+            if op_type == 'DELETE':
+                delete_content(start, end, self.tree)
+            elif op_type == 'UPDATE':
+                update_content(start, end, new_content, self.tree)
+            elif op_type == 'INSERT_AFTER':
+                insert_new_content_after_line(new_content, start, self.tree)
+
+        self.applied_ops_count += 1
+
+        end_contents = line_tree_to_content(self.tree).splitlines(keepends=True)
+        diff = unified_diff(self.start_contents, end_contents)
+
+        for d in list(diff):
+            if d.startswith('+++') or d.startswith('---'):
+                sys.stdout.write(d)
+            elif d.startswith('+'):
+                sys.stdout.write(f'{self.GREEN}{d}{self.RESET}')
+            elif d.startswith('-'):
+                sys.stdout.write(f'{self.RED}{d}{self.RESET}')
+            else:
+                sys.stdout.write(d)
+
+            sys.stdout.flush()
+
+    def output_diff(self, new_token):
+        self.ops_content += new_token
+
+        # use the alt screen because the diff could (and most like will)
+        # shrink. not using the alt screen in this case could mess with
+        # scrollback history, especially in tmux
+
+        # enter alt screen
+        sys.stdout.write('\x1b[?1049h')
+        # hide cursor
+        sys.stdout.write('\x1b[?25l')
+        # clear to the end
+        sys.stdout.write('\x1b[?1049h')
+        # move to top left
+        sys.stdout.write('\x1b[0;0H')
+
+        self.show_diff()
 
         # show cursor
         sys.stdout.write('\x1b[?25h')

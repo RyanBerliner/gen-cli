@@ -16,5 +16,6 @@ class Ollama(BaseProvider):
 
     def _extract_stream_chunk(self, line):
         data = json.loads(line)
+
         if not data['done']:
             return data['response']
