@@ -13,14 +13,51 @@ from .editor import (
 
 
 class BaseDiffer:
-    pass
-
-
-class RewriteDiffer(BaseDiffer):
     GREEN = "\x1b[32m"
     RED = "\x1b[31m"
     RESET = "\x1b[0m"
 
+    def show_diff(self, final=True):
+        raise NotImplementedError
+
+    def output_diff(self, new_token):
+        raise NotImplementedError
+
+    def _write_unified_diff(self, unified_diff_list):
+        for d in unified_diff_list:
+            if d.startswith('+++') or d.startswith('---'):
+                sys.stdout.write(d)
+            elif d.startswith('+'):
+                sys.stdout.write(f'{self.GREEN}{d}{self.RESET}')
+            elif d.startswith('-'):
+                sys.stdout.write(f'{self.RED}{d}{self.RESET}')
+            else:
+                sys.stdout.write(d)
+
+            sys.stdout.flush()
+
+    def _prep_alt_screen(self):
+        # use the alt screen because the diff could (and most like will)
+        # shrink. not using the alt screen in this case could mess with
+        # scrollback history, especially in tmux
+
+        # enter alt screen
+        sys.stdout.write('\x1b[?1049h')
+        # hide cursor
+        sys.stdout.write('\x1b[?25l')
+        # clear to the end
+        sys.stdout.write('\x1b[?1049h')
+        # move to top left
+        sys.stdout.write('\x1b[0;0H')
+
+    def _clean_alt_screen(self):
+        # show cursor
+        sys.stdout.write('\x1b[?25h')
+        # leave alt screen
+        sys.stdout.write('\x1b[?1049l')
+
+
+class RewriteDiffer(BaseDiffer):
     def __init__(self, file_content):
         self.start_contents = file_content.splitlines(keepends=True)
         self.end_contents = ''
@@ -48,47 +85,16 @@ class RewriteDiffer(BaseDiffer):
 
             filtered_diff.reverse()
 
-        for d in filtered_diff:
-            if d.startswith('+++') or d.startswith('---'):
-                sys.stdout.write(d)
-            elif d.startswith('+'):
-                sys.stdout.write(f'{self.GREEN}{d}{self.RESET}')
-            elif d.startswith('-'):
-                sys.stdout.write(f'{self.RED}{d}{self.RESET}')
-            else:
-                sys.stdout.write(d)
-
-            sys.stdout.flush()
+        self._write_unified_diff(filtered_diff)
 
     def output_diff(self, new_token):
         self.end_contents += new_token
-
-        # use the alt screen because the diff could (and most like will)
-        # shrink. not using the alt screen in this case could mess with
-        # scrollback history, especially in tmux
-
-        # enter alt screen
-        sys.stdout.write('\x1b[?1049h')
-        # hide cursor
-        sys.stdout.write('\x1b[?25l')
-        # clear to the end
-        sys.stdout.write('\x1b[?1049h')
-        # move to top left
-        sys.stdout.write('\x1b[0;0H')
-
+        self._prep_alt_screen()
         self.show_diff(final=False)
-
-        # show cursor
-        sys.stdout.write('\x1b[?25h')
-        # leave alt screen
-        sys.stdout.write('\x1b[?1049l')
+        self._clean_alt_screen()
 
 
 class HashDiffer(BaseDiffer):
-    GREEN = "\x1b[32m"
-    RED = "\x1b[31m"
-    RESET = "\x1b[0m"
-
     def __init__(self, file_contents):
         self.start_contents = file_contents.splitlines(keepends=True)
         self.tree = content_to_line_tree(file_contents)
@@ -124,39 +130,11 @@ class HashDiffer(BaseDiffer):
         self.applied_ops_count += 1
 
         end_contents = line_tree_to_content(self.tree).splitlines(keepends=True)
-        diff = unified_diff(self.start_contents, end_contents)
-
-        for d in list(diff):
-            if d.startswith('+++') or d.startswith('---'):
-                sys.stdout.write(d)
-            elif d.startswith('+'):
-                sys.stdout.write(f'{self.GREEN}{d}{self.RESET}')
-            elif d.startswith('-'):
-                sys.stdout.write(f'{self.RED}{d}{self.RESET}')
-            else:
-                sys.stdout.write(d)
-
-            sys.stdout.flush()
+        diff = list(unified_diff(self.start_contents, end_contents))
+        self._write_unified_diff(diff)
 
     def output_diff(self, new_token):
         self.ops_content += new_token
-
-        # use the alt screen because the diff could (and most like will)
-        # shrink. not using the alt screen in this case could mess with
-        # scrollback history, especially in tmux
-
-        # enter alt screen
-        sys.stdout.write('\x1b[?1049h')
-        # hide cursor
-        sys.stdout.write('\x1b[?25l')
-        # clear to the end
-        sys.stdout.write('\x1b[?1049h')
-        # move to top left
-        sys.stdout.write('\x1b[0;0H')
-
+        self._prep_alt_screen()
         self.show_diff(final=False)
-
-        # show cursor
-        sys.stdout.write('\x1b[?25h')
-        # leave alt screen
-        sys.stdout.write('\x1b[?1049l')
+        self._clean_alt_screen()
