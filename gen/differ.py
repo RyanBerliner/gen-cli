@@ -129,7 +129,9 @@ class HashDiffer(BaseDiffer):
 
         self.applied_ops_count += 1
 
-        end_contents = line_tree_to_content(self.tree).splitlines(keepends=True)
+        end_contents = line_tree_to_content(self.tree)\
+            .splitlines(keepends=True)
+
         diff = list(unified_diff(self.start_contents, end_contents))
         self._write_unified_diff(diff)
 

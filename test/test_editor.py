@@ -1,9 +1,5 @@
-import json
-import time
-
 from unittest import TestCase
 
-from gen.differ import HashDiffer
 from gen.editor import (
     content_to_line_tree,
     debug_line_tree,
@@ -52,6 +48,7 @@ class EditorTest(TestCase):
         self.assertEqual(
             line_tree_to_content(tree, with_hashes=True),
             (
+                '0000000|\n'
                 'a5ad466|  lorem\n'
                 'b090a6c|ipsum \n'
                 'a993fd6|\tdolor amet  '
