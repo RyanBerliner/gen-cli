@@ -12,7 +12,11 @@ from .editor import (
 )
 
 
-class Differ:
+class BaseDiffer:
+    pass
+
+
+class RewriteDiffer(BaseDiffer):
     GREEN = "\x1b[32m"
     RED = "\x1b[31m"
     RESET = "\x1b[0m"
@@ -80,7 +84,7 @@ class Differ:
         sys.stdout.write('\x1b[?1049l')
 
 
-class HashDiffer:
+class HashDiffer(BaseDiffer):
     GREEN = "\x1b[32m"
     RED = "\x1b[31m"
     RESET = "\x1b[0m"

@@ -170,18 +170,3 @@ class EditorTest(TestCase):
                 'line 3\n'
             )
         )
-
-
-# This is for doing manual visual testing to see how the output looks as its
-# streaming in. Run directly: `python -m test.test_editor`
-if __name__ == '__main__':
-    original = open('test/data/hash_edit_original.txt', 'r').read()
-    update_stream = open('test/data/hash_edit_token_stream.txt', 'r')
-    update_stream = json.loads(update_stream.read())
-
-    differ = HashDiffer(original)
-
-    for token in update_stream:
-        differ.output_diff(token)
-        tokens_per_second = 100
-        time.sleep(1 / tokens_per_second)

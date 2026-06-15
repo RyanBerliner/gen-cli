@@ -2,7 +2,7 @@ import os
 import sys
 import configparser
 
-from gen.differ import Differ, HashDiffer
+from gen.differ import RewriteDiffer, HashDiffer
 from gen.editor import content_to_line_tree, line_tree_to_content
 from gen.utils import user_confirmation
 from gen.prompt import (
@@ -75,7 +75,8 @@ def process_file(args, file):
     is_editting = args.edit or args.experimental_edit
 
     content = file.read()
-    differ = HashDiffer(content) if args.experimental_edit else Differ(content)
+    differ = HashDiffer(content) if args.experimental_edit else \
+        RewriteDiffer(content)
 
     if args.experimental_edit:
         tree = content_to_line_tree(content)
