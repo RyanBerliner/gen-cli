@@ -34,11 +34,20 @@ $ gen "what's this commenting style called" program.py
 Docstring
 ```
 
-Edit a file. Review the diff before confirming, or use `--force` to write
-without review.
+Edit a file with `-e` or `-x`. Review the diff before confirming, or use
+`--force` to write without review.
+
+When using larger models prefer `-x` to perform hash based file edits. This is
+typically more efficient in this case (fewer tokens, faster).
+
+The `-e` flag performs edits by doing full file rewrites. This is slow but
+small models (those fitting on a 8GB GPU) are able to successfully edit files
+using this method.
+
+Both flags are otherwise equivalent.
 
 ```
-$ gen -e "use placeholders instead of f strings" program1.py
+$ gen -x "use placeholders instead of f strings" program1.py
 ---
 +++
 @@ -1,7 +1,8 @@
