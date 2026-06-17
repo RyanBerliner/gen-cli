@@ -42,6 +42,10 @@ class BaseProvider:
             headers={
                 **self._auth_headers(),
                 'Content-Type': 'application/json',
+                # A not super sketchy user agent is required to get through
+                # some apis firewall configurations
+                # TODO: add a version string
+                'User-Agent': 'python/gen-cli',
             },
         )
 

@@ -18,12 +18,14 @@ class Cerebras(BaseProvider):
         }
 
     def _extract_stream_chunk(self, line):
-        data = line[6:]
+        line = line.decode('utf-8')
+        if not line.startswith('data: '):
+            return None
 
-        if data == b'[DONE]':
-            return
+        if line[6:] == '[DONE]':
+            return None
 
-        data = json.loads(data)
+        data = json.loads(line[6:])
 
         if choices := data.get('choices', []):
             return choices[0].get('delta', {}).get('content', '')
