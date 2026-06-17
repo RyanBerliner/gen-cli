@@ -95,14 +95,15 @@ profile.
 
 ```
 [default]
+provider = cerebras
+effort = medium
+model = gpt-oss-120b
+key = your-api-key
+
+[local]
 provider = ollama
 endpoint = http://<ollama-endpoint>
 model = gemma4:e2b
-
-[fast]
-provider = ollama
-endpoint = http://<ollama-endpoint>
-model = llama3.2:1b
 ```
 
 ### Supported Provider Configurations
