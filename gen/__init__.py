@@ -4,7 +4,7 @@ import configparser
 
 from gen.differ import RewriteDiffer, HashDiffer
 from gen.editor import content_to_line_tree, line_tree_to_content
-from gen.utils import user_confirmation
+from gen.utils import user_selection
 from gen.prompt import (
     get_edit_file_system_prompt,
     get_edit_file_system_prompt_hash,
@@ -91,12 +91,16 @@ def process_file(args, file):
     )
 
     if is_editting:
-        doit = args.force
+        selection = args.force
         if not args.force:
             differ.show_diff()
-            doit = user_confirmation(f'\nConfirm changes to {file.name}')
+            selection = user_selection(f'\nConfirm changes to {file.name}', {
+                'y': True,
+                'n': False,
+                '*': 5,
+            })
 
-        if doit:
+        if selection is True:
             new_content = response if args.edit else \
                     line_tree_to_content(differ.tree)
 
@@ -105,8 +109,17 @@ def process_file(args, file):
             file.truncate()
 
             sys.stdout.write(file.name)
-        else:
+        elif selection is False:
             sys.stdout.write('No changes written')
+        else:
+            file.seek(0)
+            if args.context_files is not None:
+                for context_file in args.context_files:
+                    context_file.seek(0)
+
+            args.prompt += f'\n\n{selection}'
+            process_file(args, file)
+            return
 
     sys.stdout.write('\n')
 
