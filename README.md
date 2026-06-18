@@ -41,8 +41,8 @@ When using larger models prefer `-x` to perform hash based file edits. This is
 typically more efficient in this case (fewer tokens, faster).
 
 The `-e` flag performs edits by doing full file rewrites. This is slow but
-small models (those fitting on a 8GB GPU) are able to successfully edit files
-using this method.
+small models (those fitting on a 8GB GPU) tend to have better luck with this
+method compared to hash based editing.
 
 Both flags are otherwise equivalent.
 
