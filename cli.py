@@ -21,7 +21,7 @@ if __name__ == '__main__':
     parser.add_argument('-c', '--context-files', nargs='+',
                         type=argparse.FileType('r+'))
     parser.add_argument('-e', '--edit', action='store_true')
-    parser.add_argument('-x', '--experimental-edit', action='store_true')
+    parser.add_argument('-x', '--hash-edit', action='store_true')
     parser.add_argument('-f', '--force', action='store_true')
     parser.add_argument('--profile', default='default')
     args = parser.parse_args()

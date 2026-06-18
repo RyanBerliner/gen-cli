@@ -69,16 +69,16 @@ def process_file(args, file):
 
     if args.edit:
         system_prompt = get_edit_file_system_prompt()
-    if args.experimental_edit:
+    if args.hash_edit:
         system_prompt = get_edit_file_system_prompt_hash()
 
-    is_editting = args.edit or args.experimental_edit
+    is_editting = args.edit or args.hash_edit
 
     content = file.read()
-    differ = HashDiffer(content) if args.experimental_edit else \
+    differ = HashDiffer(content) if args.hash_edit else \
         RewriteDiffer(content)
 
-    if args.experimental_edit:
+    if args.hash_edit:
         tree = content_to_line_tree(content)
         tree_content = line_tree_to_content(tree, with_hashes=True)
         content = tree_content
