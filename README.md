@@ -35,7 +35,8 @@ Docstring
 ```
 
 Edit a file with `-e` or `-x`. Review the diff before confirming, or use
-`--force` to write without review.
+`--force` to write without review. When confirming you can also type feedback
+to append to your prompt and refine the edits.
 
 When using larger models prefer `-x` to perform hash based file edits. This is
 typically more efficient in this case (fewer tokens, faster).
@@ -60,7 +61,7 @@ $ gen -x "use placeholders instead of f strings" program1.py
 
      return answer == 'y'
 
-Confirm changes to program1.py [y/N]:
+Confirm changes to program1.py [y/n/*]: i dont like .format, use % instead
 ```
 
 Provide as many files as you need for added context.
