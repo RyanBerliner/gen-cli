@@ -68,7 +68,7 @@ Provide as many files as you need for added context.
 
 
 ```
-$ gen -e "any edge cases i havent thought to test?" test_program1.py -c program1.py program1_dep.py
+$ gen "any edge cases i havent thought to test?" test_program1.py -c program1.py program1_dep.py
 [... and maybe you get a useful response]
 ```
 
