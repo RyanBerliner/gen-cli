@@ -1,8 +1,8 @@
 # [gen]erate LLM completions
 
-A basic CLI wrapper of LLM providers with an interface to review suggested file
-diffs before applying them. Read the [manifesto](MANIFESTO.md) for an idea of
-where a potential roadmap would lead. I have no formal plans.
+A CLI tool for generating LLM completions and editing files. See the
+[manifesto](MANIFESTO.md) to learn why it exists and where development may or
+may not go in the future. I have no formal plans.
 
 See basic usage below or look at a few [examples.](examples/)
 
