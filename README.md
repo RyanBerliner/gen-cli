@@ -78,12 +78,7 @@ $ gen "any edge cases i havent thought to test?" test_program1.py -c program1.py
    `gen` is recommended and used in the examples in this readme. You will need
    Python to be installed, that is the only dependency.
 
-2. **Set up the required prompts.** These must live in `~/.gen` and you can
-   easily use the defaults by symlinking those found in this repo under
-   `.gen/`. You can rewrite these as you see need, or just keep using the
-   defaults.
-
-3. **Add your LLM provider(s)**. To generate the completions you'll need to
+2. **Add your LLM provider(s)**. To generate the completions you'll need to
    point the tool to a supported provider via `~/.gen/config` profiles. Read
    more in the Configuration section below.
 
