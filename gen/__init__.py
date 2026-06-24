@@ -20,8 +20,7 @@ from gen.providers import (
 
 def generate(system_prompt, args, stream_cb, additional_content=None):
     config = configparser.ConfigParser()
-    # not sure why we have to manually expand the home path
-    config.read(os.path.expanduser('~') + '/.gen/config')
+    config.read(os.path.join(os.path.expanduser('~'), '.gen', 'config'))
     options = config[args.profile]
 
     match options['provider']:
