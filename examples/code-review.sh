@@ -12,7 +12,7 @@
 
 REVIEW_INSTRUCTIONS=$(cat <<'EOF'
 
-Review the code changes. I've provided the diffs with commit messages, and also
+Review the code changes. I\'ve provided the diffs with commit messages, and also
 the full files as additional context. I would like you to review the code for
 
 - Accuracy, does it do what it should, are there logic bugs
