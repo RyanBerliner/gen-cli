@@ -33,4 +33,11 @@ or short pseudo code... but don't babble on or provide giant pieces of code.
 EOF
 )
 
-gen "$REVIEW_INSTRUCTIONS\n\n$(git show "$1")" -c $(git diff --name-only "$1")
+# instead of passing directly $(git diff --name-only) which would break for
+# files with spaces etc in them
+CHANGED_FILES=()
+while IFS= read -r file; do
+  CHANGED_FILES+=("$file")
+done < <(git diff --name-only "$1")
+
+gen "$(printf '%s\n\n%s' "$REVIEW_INSTRUCTIONS" "$(git show "$1")")" -c "${CHANGED_FILES[@]}"
