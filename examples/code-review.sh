@@ -38,6 +38,6 @@ EOF
 CHANGED_FILES=()
 while IFS= read -r file; do
   CHANGED_FILES+=("$file")
-done < <(git diff --name-only "$1")
+done < <(git diff --name-only --diff-filter=d "$1")
 
 gen "$(printf '%s\n\n%s' "$REVIEW_INSTRUCTIONS" "$(git show "$1")")" -c "${CHANGED_FILES[@]}"
