@@ -17,7 +17,7 @@ class Cerebras(BaseProvider):
             ]
         }
 
-    def _extract_stream_chunk(self, line):
+    def _extract_output_token(self, line):
         line = line.decode('utf-8')
         if not line.startswith('data: '):
             return None

@@ -29,7 +29,7 @@ class BaseProvider:
     def _build_payload(self, system_prompt, prompt):
         raise NotImplementedError
 
-    def _extract_stream_chunk(self, line):
+    def _extract_output_token(self, line):
         raise NotImplementedError
 
     def generate(
@@ -62,7 +62,7 @@ class BaseProvider:
 
                 line = line.rstrip(b'\r\n')
 
-                if chunk := self._extract_stream_chunk(line):
+                if chunk := self._extract_output_token(line):
                     full_response += chunk
                     output_token_cb(chunk)
 

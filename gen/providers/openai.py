@@ -20,7 +20,7 @@ class OpenAI(BaseProvider):
             'store': False,
         }
 
-    def _extract_stream_chunk(self, line):
+    def _extract_output_token(self, line):
         # streaming responses on grok send all sorts of different event types,
         # not all of which are related to token outputs. chunks we care about
         # are prefixed like 'data: '

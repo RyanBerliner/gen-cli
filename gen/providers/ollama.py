@@ -14,7 +14,7 @@ class Ollama(BaseProvider):
             'stream': True,
         }
 
-    def _extract_stream_chunk(self, line):
+    def _extract_output_token(self, line):
         data = json.loads(line)
 
         if not data['done']:
