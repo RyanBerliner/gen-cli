@@ -28,12 +28,11 @@ if __name__ == '__main__':
 
     system_prompt = get_system_prompt()
 
+    additional_content = None
+    if not sys.stdin.isatty():
+        additional_content = sys.stdin.read()
+
     if args.file is None:
-        additional_content = None
-
-        if not sys.stdin.isatty():
-            additional_content = sys.stdin.read()
-
         generate(
             system_prompt,
             args,
