@@ -21,11 +21,11 @@ def _default_system_prompt():
 
 
 def get_system_prompt(args):
-    if args.file is None:
-        return _default_system_prompt()
-
     if args.edit:
         return _edit_file_system_prompt()
 
     if args.hash_edit:
         return _edit_file_system_prompt_hash()
+
+    return _default_system_prompt()
+

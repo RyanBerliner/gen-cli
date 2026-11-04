@@ -27,7 +27,7 @@ if __name__ == '__main__':
     parser.add_argument('--profile', default='default')
     args = parser.parse_args()
 
-    system_prompt = get_system_prompt()
+    system_prompt = get_system_prompt(args)
 
     additional_content = None
     if not sys.stdin.isatty():
