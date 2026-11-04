@@ -32,7 +32,7 @@ class BaseProvider:
     def _extract_stream_chunk(self, line):
         raise NotImplementedError
 
-    def generate(self, system_prompt, prompt, stream_cb):
+    def generate(self, system_prompt, prompt, output_token_cb, thinking_token_cb):
         full_response = ''
         payload = self._build_payload(system_prompt, prompt)
 
@@ -58,6 +58,6 @@ class BaseProvider:
 
                 if chunk := self._extract_stream_chunk(line):
                     full_response += chunk
-                    stream_cb(chunk)
+                    output_token_cb(chunk)
 
         return full_response

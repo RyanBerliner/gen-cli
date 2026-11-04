@@ -13,7 +13,7 @@ from gen.providers import (
 )
 
 
-def generate(system_prompt, args, stream_cb, additional_content=None):
+def generate(system_prompt, args, output_token_cb, thinking_token_cb, additional_content=None):
     config = configparser.ConfigParser()
     config.read(os.path.join(os.path.expanduser('~'), '.gen', 'config'))
     options = config[args.profile]
@@ -55,7 +55,12 @@ def generate(system_prompt, args, stream_cb, additional_content=None):
     else:
         prompt += args.prompt
 
-    return provider.generate(system_prompt, prompt, stream_cb)
+    return provider.generate(
+        system_prompt,
+        prompt,
+        output_token_cb,
+        thinking_token_cb,
+    )
 
 
 def process_file(system_prompt, file):
@@ -73,7 +78,8 @@ def process_file(system_prompt, file):
     response = generate(
         system_prompt,
         args,
-        stream_cb=differ.output_diff if is_editting else output_token,
+        output_token_cb=differ.output_diff if is_editting else output_token,
+        thinking_token_cb=thinking_token,
         additional_content=content,
     )
 
@@ -114,3 +120,7 @@ def process_file(system_prompt, file):
 def output_token(token):
     sys.stdout.write(token)
     sys.stdout.flush()
+
+def thinking_token(token):
+    sys.stderr.write(token)
+    sys.stderr.flush()

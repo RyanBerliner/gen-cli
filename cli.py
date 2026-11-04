@@ -7,6 +7,7 @@ from gen.prompt import get_system_prompt
 from gen import (
     generate,
     output_token,
+    thinking_token,
     process_file,
 )
 
@@ -36,7 +37,8 @@ if __name__ == '__main__':
         generate(
             system_prompt,
             args,
-            stream_cb=output_token,
+            output_token_cb=output_token,
+            thinking_token_cb=thinking_token,
             additional_content=additional_content
         )
 
