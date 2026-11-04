@@ -33,7 +33,7 @@ class BaseProvider:
         raise NotImplementedError
 
     # Not all providers need to support outputting thinking tokens
-    def _extract_thinking_token(self, line):
+    def _extract_thinking_progress(self, line):
         pass
 
     def generate(
