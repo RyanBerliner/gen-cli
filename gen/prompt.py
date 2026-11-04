@@ -28,4 +28,3 @@ def get_system_prompt(args):
         return _edit_file_system_prompt_hash()
 
     return _default_system_prompt()
-
