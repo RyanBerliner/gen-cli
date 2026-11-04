@@ -8,13 +8,24 @@ def _get_prompt_file(filename):
         return file.read()
 
 
-def get_edit_file_system_prompt():
+def _edit_file_system_prompt():
     return _get_prompt_file('edit_file_system_prompt.txt')
 
 
-def get_edit_file_system_prompt_hash():
+def _edit_file_system_prompt_hash():
     return _get_prompt_file('edit_file_system_prompt_hash.txt')
 
 
-def get_system_prompt():
+def _default_system_prompt():
     return _get_prompt_file('system_prompt.txt')
+
+
+def get_system_prompt(args):
+    if args.file is None:
+        return _default_system_prompt()
+
+    if args.edit:
+        return _edit_file_system_prompt()
+
+    if args.hash_edit:
+        return _edit_file_system_prompt_hash()

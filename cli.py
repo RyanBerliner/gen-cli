@@ -26,8 +26,9 @@ if __name__ == '__main__':
     parser.add_argument('--profile', default='default')
     args = parser.parse_args()
 
+    system_prompt = get_system_prompt()
+
     if args.file is None:
-        system_prompt = get_system_prompt()
         additional_content = None
 
         if not sys.stdin.isatty():
@@ -43,4 +44,4 @@ if __name__ == '__main__':
         sys.stdout.write('\n')
         exit(0)
 
-    process_file(args, args.file)
+    process_file(system_prompt, args, args.file)

@@ -5,11 +5,6 @@ import configparser
 from gen.differ import RewriteDiffer, HashDiffer
 from gen.editor import content_to_line_tree, line_tree_to_content
 from gen.utils import user_selection
-from gen.prompt import (
-    get_edit_file_system_prompt,
-    get_edit_file_system_prompt_hash,
-    get_system_prompt,
-)
 from gen.providers import (
     Cerebras,
     Grok,
@@ -63,14 +58,7 @@ def generate(system_prompt, args, stream_cb, additional_content=None):
     return provider.generate(system_prompt, prompt, stream_cb)
 
 
-def process_file(args, file):
-    system_prompt = get_system_prompt()
-
-    if args.edit:
-        system_prompt = get_edit_file_system_prompt()
-    if args.hash_edit:
-        system_prompt = get_edit_file_system_prompt_hash()
-
+def process_file(system_prompt, file):
     is_editting = args.edit or args.hash_edit
 
     content = file.read()
