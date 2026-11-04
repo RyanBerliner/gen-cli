@@ -20,15 +20,24 @@ class OpenAI(BaseProvider):
             'store': False,
         }
 
-    def _extract_output_token(self, line):
-        # streaming responses on grok send all sorts of different event types,
-        # not all of which are related to token outputs. chunks we care about
-        # are prefixed like 'data: '
+    def _extract_stream_event(self, line):
         line = line.decode('utf-8')
         if not line.startswith('data: '):
             return None
 
-        data = json.loads(line[6:])
+        return json.loads(line[6:])
 
-        if data.get('type') == 'response.output_text.delta':
-            return data.get('delta', None)
+    def _extract_output_token(self, line):
+        if data := self._extract_stream_event(line):
+            if data.get('type') == 'response.output_text.delta':
+                return data.get('delta', None)
+
+    def _extract_thinking_progress(self, line):
+        if data := self._extract_stream_event(line):
+            if data.get('type') != 'response.output_item.added':
+                return None
+
+            if data.get('item', {}).get('type', None) != 'reasoning':
+                return None
+
+            return True

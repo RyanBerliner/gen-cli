@@ -17,12 +17,15 @@ def generate(
     system_prompt,
     args,
     output_token_cb,
-    thinking_token_cb,
+    thinking_progress_cb,
+    thinking_detail_cb,
     additional_content=None
 ):
     config = configparser.ConfigParser()
     config.read(os.path.join(os.path.expanduser('~'), '.gen', 'config'))
     options = config[args.profile]
+    model = options.get('model')
+    effort = options.get('effort')
 
     match options['provider']:
         case 'cerebras':
@@ -37,11 +40,14 @@ def generate(
             raise Exception(f'Invalid provider {unknown}')
 
     provider = Provider(
-        options.get('model'),
+        model,
         key=options.get('key'),
-        effort=options.get('effort'),
+        effort=effort,
         endpoint=options.get('endpoint'),
     )
+
+    if options.get('effort'):
+        thinking_detail_cb(f'{model} is thinking [{effort}] ')
 
     prompt = ''
     if args.context_files is not None:
@@ -65,7 +71,7 @@ def generate(
         system_prompt,
         prompt,
         output_token_cb,
-        thinking_token_cb,
+        thinking_progress_cb,
     )
 
 
@@ -85,7 +91,8 @@ def process_file(system_prompt, args, file):
         system_prompt,
         args,
         output_token_cb=differ.output_diff if is_editting else output_token,
-        thinking_token_cb=thinking_token,
+        thinking_progress_cb=thinking_progress,
+        thinking_detail_cb=thinking_detail,
         additional_content=content,
     )
 
@@ -128,6 +135,11 @@ def output_token(token):
     sys.stdout.flush()
 
 
-def thinking_token(token):
-    sys.stderr.write(token)
+def thinking_progress(token):
+    sys.stderr.write('.')
+    sys.stderr.flush()
+
+
+def thinking_detail(msg):
+    sys.stderr.write(msg)
     sys.stderr.flush()

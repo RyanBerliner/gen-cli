@@ -32,12 +32,16 @@ class BaseProvider:
     def _extract_output_token(self, line):
         raise NotImplementedError
 
+    # Not all providers need to support outputting thinking tokens
+    def _extract_thinking_token(self, line):
+        pass
+
     def generate(
         self,
         system_prompt,
         prompt,
         output_token_cb,
-        thinking_token_cb
+        thinking_progress_cb
     ):
         full_response = ''
         payload = self._build_payload(system_prompt, prompt)
@@ -62,8 +66,11 @@ class BaseProvider:
 
                 line = line.rstrip(b'\r\n')
 
-                if chunk := self._extract_output_token(line):
-                    full_response += chunk
-                    output_token_cb(chunk)
+                if output := self._extract_output_token(line):
+                    full_response += output
+                    output_token_cb(output)
+
+                if thinking := self._extract_thinking_progress(line):
+                    thinking_progress_cb(thinking)
 
         return full_response
