@@ -23,5 +23,5 @@ class StdErrThinker(BaseThinker):
         self.progress_count += 1
 
     def done(self):
-        sys.stderr.write('\n\n -- done thinking -- \n\n')
+        sys.stderr.write('\r\033[K')
         sys.stderr.flush()
