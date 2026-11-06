@@ -4,11 +4,10 @@ import argparse
 import sys
 
 from gen.prompt import get_system_prompt
+from gen.thinker import StdErrThinker
 from gen import (
     generate,
     output_token,
-    thinking_progress,
-    thinking_detail,
     process_file,
 )
 
@@ -39,8 +38,7 @@ if __name__ == '__main__':
             system_prompt,
             args,
             output_token_cb=output_token,
-            thinking_progress_cb=thinking_progress,
-            thinking_detail_cb=thinking_detail,
+            thinker=StdErrThinker(),
             additional_content=additional_content
         )
 

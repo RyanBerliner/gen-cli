@@ -5,6 +5,7 @@ import configparser
 from gen.differ import RewriteDiffer, HashDiffer
 from gen.editor import content_to_line_tree, line_tree_to_content
 from gen.utils import user_selection
+from gen.thinker import StdErrThinker
 from gen.providers import (
     Cerebras,
     Grok,
@@ -17,8 +18,7 @@ def generate(
     system_prompt,
     args,
     output_token_cb,
-    thinking_progress_cb,
-    thinking_detail_cb,
+    thinker,
     additional_content=None
 ):
     config = configparser.ConfigParser()
@@ -46,9 +46,6 @@ def generate(
         endpoint=options.get('endpoint'),
     )
 
-    if options.get('effort'):
-        thinking_detail_cb(f'{model} is thinking [{effort}] ')
-
     prompt = ''
     if args.context_files is not None:
         for context_file in args.context_files:
@@ -71,7 +68,7 @@ def generate(
         system_prompt,
         prompt,
         output_token_cb,
-        thinking_progress_cb,
+        thinker,
     )
 
 
@@ -91,8 +88,7 @@ def process_file(system_prompt, args, file):
         system_prompt,
         args,
         output_token_cb=differ.output_diff if is_editting else output_token,
-        thinking_progress_cb=thinking_progress,
-        thinking_detail_cb=thinking_detail,
+        thinker=StdErrThinker(),
         additional_content=content,
     )
 
@@ -133,13 +129,3 @@ def process_file(system_prompt, args, file):
 def output_token(token):
     sys.stdout.write(token)
     sys.stdout.flush()
-
-
-def thinking_progress(token):
-    sys.stderr.write('.')
-    sys.stderr.flush()
-
-
-def thinking_detail(msg):
-    sys.stderr.write(msg)
-    sys.stderr.flush()

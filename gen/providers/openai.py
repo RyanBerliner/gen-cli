@@ -32,12 +32,12 @@ class OpenAI(BaseProvider):
             if data.get('type') == 'response.output_text.delta':
                 return data.get('delta', None)
 
-    def _extract_thinking_progress(self, line):
+    def _is_thinking_progress(self, line):
         if data := self._extract_stream_event(line):
             if data.get('type') != 'response.output_item.added':
-                return None
+                return False
 
             if data.get('item', {}).get('type', None) != 'reasoning':
-                return None
+                return False
 
             return True

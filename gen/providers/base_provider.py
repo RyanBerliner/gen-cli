@@ -15,6 +15,7 @@ class BaseProvider:
         self.model = model
         self.key = key
         self.effort = effort
+        self.begun_output = False
 
         if self.endpoint_path:
             assert endpoint, 'Must supply an endpoint'
@@ -32,8 +33,7 @@ class BaseProvider:
     def _extract_output_token(self, line):
         raise NotImplementedError
 
-    # Not all providers need to support outputting thinking tokens
-    def _extract_thinking_progress(self, line):
+    def _is_thinking_progress(self, line):
         pass
 
     def generate(
@@ -41,7 +41,7 @@ class BaseProvider:
         system_prompt,
         prompt,
         output_token_cb,
-        thinking_progress_cb
+        thinker,
     ):
         full_response = ''
         payload = self._build_payload(system_prompt, prompt)
@@ -66,11 +66,18 @@ class BaseProvider:
 
                 line = line.rstrip(b'\r\n')
 
+                # TODO: should make this more of a case match pattern
+                #       and each provider returns different types of events
+
                 if output := self._extract_output_token(line):
+                    if not self.begun_output and self.effort:
+                        thinker.done()
+
                     full_response += output
                     output_token_cb(output)
+                    self.begun_output = True
 
-                if thinking := self._extract_thinking_progress(line):
-                    thinking_progress_cb(thinking)
+                if self._is_thinking_progress(line):
+                    thinker.progress()
 
         return full_response
