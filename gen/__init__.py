@@ -5,7 +5,6 @@ import configparser
 from gen.differ import RewriteDiffer, HashDiffer
 from gen.editor import content_to_line_tree, line_tree_to_content
 from gen.utils import user_selection
-from gen.thinker import StdErrThinker
 from gen.providers import (
     Cerebras,
     Grok,
@@ -72,7 +71,7 @@ def generate(
     )
 
 
-def process_file(system_prompt, args, file):
+def process_file(system_prompt, args, file, thinker):
     is_editting = args.edit or args.hash_edit
 
     content = file.read()
@@ -88,7 +87,7 @@ def process_file(system_prompt, args, file):
         system_prompt,
         args,
         output_token_cb=differ.output_diff if is_editting else output_token,
-        thinker=StdErrThinker(),
+        thinker=thinker,
         additional_content=content,
     )
 
@@ -120,7 +119,10 @@ def process_file(system_prompt, args, file):
                     context_file.seek(0)
 
             args.prompt += f'\n\n{selection}'
-            process_file(system_prompt, args, file)
+
+            # TODO: reset the thinker output
+            process_file(system_prompt, args, file, thinker)
+
             return
 
     sys.stdout.write('\n')

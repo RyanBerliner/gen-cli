@@ -28,6 +28,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     system_prompt = get_system_prompt(args)
+    thinker = StdErrThinker()
 
     additional_content = None
     if not sys.stdin.isatty():
@@ -38,11 +39,11 @@ if __name__ == '__main__':
             system_prompt,
             args,
             output_token_cb=output_token,
-            thinker=StdErrThinker(),
+            thinker=thinker,
             additional_content=additional_content
         )
 
         sys.stdout.write('\n')
         exit(0)
 
-    process_file(system_prompt, args, args.file)
+    process_file(system_prompt, args, args.file, thinker)
