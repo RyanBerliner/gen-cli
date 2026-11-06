@@ -120,7 +120,7 @@ def process_file(system_prompt, args, file):
                     context_file.seek(0)
 
             args.prompt += f'\n\n{selection}'
-            process_file(args, file)
+            process_file(system_prompt, args, file)
             return
 
     sys.stdout.write('\n')
