@@ -4,7 +4,7 @@ import argparse
 import sys
 
 from gen.prompt import get_system_prompt
-from gen.thinker import StdErrThinker
+from gen.thinker import StdErrThinker, QuietThinker
 from gen.differ import HashDiffer, RewriteDiffer
 from gen.editor import content_to_line_tree, line_tree_to_content
 from gen import (
@@ -25,13 +25,14 @@ if __name__ == '__main__':
                         type=argparse.FileType('r+'))
     parser.add_argument('-e', '--edit', action='store_true')
     parser.add_argument('-x', '--hash-edit', action='store_true')
+    parser.add_argument('--quiet', action='store_true')
     parser.add_argument('--profile', default='default')
     args = parser.parse_args()
 
     generate_kwargs = {
         'user_prompt': args.prompt,
         'system_prompt': get_system_prompt(args),
-        'thinker': StdErrThinker(),
+        'thinker': StdErrThinker() if not args.quiet else QuietThinker(),
         'outputter': output_token,
         'profile': args.profile,
         'context_stdin': None,

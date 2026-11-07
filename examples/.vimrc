@@ -6,4 +6,4 @@ vnoremap <C-g> :w !gen "" -c "%"<Left><Left><Left><Left><Left><Left><Left><Left>
 " selection in visual mode. Yes, this overrides Ctrl-c ... map to whatever
 " you'd like.
 nnoremap <C-c> :!gen -x "" "%"<Left><Left><Left><Left><Left>
-vnoremap <C-c> :!gen "" -c "%"<Left><Left><Left><Left><Left><Left><Left><Left>
+vnoremap <C-c> :!gen --quiet "" -c "%"<Left><Left><Left><Left><Left><Left><Left><Left>

@@ -12,6 +12,17 @@ class BaseThinker:
         raise NotImplementedError
 
 
+class QuietThinker:
+    def progress(self):
+        pass
+
+    def done(self):
+        pass
+
+    def reset(self):
+        pass
+
+
 class StdErrThinker(BaseThinker):
     def __init__(self):
         self.progress_count = 0
