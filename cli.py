@@ -44,6 +44,8 @@ if __name__ == '__main__':
 
     if not sys.stdin.isatty():
         generate_kwargs['context_stdin'] = sys.stdin.read()
+        # so that we can later read from stdin again to get user confirmation
+        sys.stdin = open('/dev/tty', 'r')
 
     file_differ = None
 
