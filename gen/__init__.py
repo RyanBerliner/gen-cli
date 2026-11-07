@@ -16,9 +16,10 @@ def generate(
     system_prompt='',
     outputter=None,
     thinker=None,
-    primary_content=None,
-    context_files=[],
     profile=None,
+    context_stdin=None,
+    context_primary_file_content=None,
+    context_supporting_files=None,
 ):
     config = configparser.ConfigParser()
     config.read(os.path.join(os.path.expanduser('~'), '.gen', 'config'))
@@ -46,22 +47,29 @@ def generate(
     )
 
     prompt = ''
-    for context_file in context_files:
-        context_file.seek(0)
-        prompt += \
-            '<file_context>\n' + \
-            f'<file_name>{context_file.name}</file_name>\n' + \
-            f'{context_file.read()}\n' + \
-            '</file_context>\n\n'
 
-    if primary_content:
+    if context_stdin is not None:
         prompt += \
-            '<primary_content>\n' + \
-            f'{primary_content}\n' + \
-            '</primary_content>\n' + \
-            f'<prompt>\n{user_prompt}\n</prompt>'
-    else:
-        prompt += user_prompt
+            '<stdin_context>\n' + \
+            f'{context_stdin}\n' + \
+            '</stdin_context>\n\n'
+
+    if context_supporting_files is not None:
+        for context_file in context_supporting_files:
+            context_file.seek(0)
+            prompt += \
+                '<supporting_file_context>\n' + \
+                f'<file_name>{context_file.name}</file_name>\n' + \
+                f'{context_file.read()}\n' + \
+                '</supporting_file_context>\n\n'
+
+    if context_primary_file_content is not None:
+        prompt += \
+            '<primary_file_context>\n' + \
+            f'{context_primary_file_content}\n' + \
+            '</primary_file_context>\n\n'
+
+    prompt += user_prompt
 
     return provider.generate(
         system_prompt,
@@ -71,7 +79,7 @@ def generate(
     )
 
 
-def process_file(file, differ, **generate_kwargs):
+def edit_file(file, differ, **generate_kwargs):
     response = generate(**generate_kwargs)
     differ.show_diff()
 
@@ -99,7 +107,7 @@ def process_file(file, differ, **generate_kwargs):
         generate_kwargs['user_prompt'] += f'\n\n{selection}'
         generate_kwargs['thinker'].reset()
         differ.reset()
-        return process_file(file, differ, **generate_kwargs)
+        return edit_file(file, differ, **generate_kwargs)
 
 
 def output_token(token):

@@ -10,7 +10,7 @@ from gen.editor import content_to_line_tree, line_tree_to_content
 from gen import (
     generate,
     output_token,
-    process_file,
+    edit_file,
 )
 
 if __name__ == '__main__':
@@ -29,39 +29,45 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     generate_kwargs = {
-        'system_prompt': get_system_prompt(args),
         'user_prompt': args.prompt,
+        'system_prompt': get_system_prompt(args),
         'thinker': StdErrThinker(),
         'outputter': output_token,
-        'primary_content': args.file.read() if args.file else None,
-        'context_files': args.context_files if args.context_files else [],
         'profile': args.profile,
+        'context_stdin': None,
+        'context_primary_file_content': None,
+        'context_supporting_files': args.context_files,
     }
 
+    if args.file is not None:
+        generate_kwargs['context_primary_file_content'] = args.file.read()
+
     if not sys.stdin.isatty():
-        # TODO: should support stdin and file content at the same time.
-        #       generate should support primary file, stdin, context files
-        generate_kwargs['primary_content'] = sys.stdin.read()
+        generate_kwargs['context_stdin'] = sys.stdin.read()
 
     file_differ = None
 
-    if args.edit:
-        file_differ = RewriteDiffer(generate_kwargs['primary_content'])
-    elif args.hash_edit:
-        file_differ = HashDiffer(generate_kwargs['primary_content'])
-        line_tree = content_to_line_tree(generate_kwargs['primary_content'])
+    if args.edit or args.hash_edit and args.file:
+        file_contents = generate_kwargs['context_primary_file_content']
 
-        generate_kwargs['primary_content'] = line_tree_to_content(
-            line_tree,
-            with_hashes=True
-        )
+        if args.edit:
+            file_differ = RewriteDiffer(file_contents)
+        elif args.hash_edit:
+            file_differ = HashDiffer(file_contents)
+            line_tree = content_to_line_tree(file_contents)
+
+            generate_kwargs['context_primary_file_content'] = \
+                line_tree_to_content(
+                    line_tree,
+                    with_hashes=True
+                )
 
     if file_differ is not None:
         generate_kwargs['outputter'] = file_differ.output_diff
         accepted = False
 
         while not accepted:
-            accepted = process_file(args.file, file_differ, **generate_kwargs)
+            accepted = edit_file(args.file, file_differ, **generate_kwargs)
     else:
         generate(**generate_kwargs)
 
