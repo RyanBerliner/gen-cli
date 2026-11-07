@@ -2,8 +2,6 @@ import os
 import sys
 import configparser
 
-from gen.differ import RewriteDiffer, HashDiffer
-from gen.editor import content_to_line_tree, line_tree_to_content
 from gen.utils import user_selection
 from gen.providers import (
     Cerebras,
@@ -14,15 +12,17 @@ from gen.providers import (
 
 
 def generate(
-    system_prompt,
-    args,
-    output_token_cb,
-    thinker,
-    additional_content=None
+    user_prompt='',
+    system_prompt='',
+    outputter=None,
+    thinker=None,
+    primary_content=None,
+    context_files=[],
+    profile=None,
 ):
     config = configparser.ConfigParser()
     config.read(os.path.join(os.path.expanduser('~'), '.gen', 'config'))
-    options = config[args.profile]
+    options = config[profile]
     model = options.get('model')
     effort = options.get('effort')
 
@@ -46,86 +46,60 @@ def generate(
     )
 
     prompt = ''
-    if args.context_files is not None:
-        for context_file in args.context_files:
-            prompt += \
-                '<file_context>\n' + \
-                f'<file_name>{context_file.name}</file_name>\n' + \
-                f'{context_file.read()}\n' + \
-                '</file_context>\n\n'
+    for context_file in context_files:
+        context_file.seek(0)
+        prompt += \
+            '<file_context>\n' + \
+            f'<file_name>{context_file.name}</file_name>\n' + \
+            f'{context_file.read()}\n' + \
+            '</file_context>\n\n'
 
-    if additional_content:
+    if primary_content:
         prompt += \
             '<primary_content>\n' + \
-            f'{additional_content}\n' + \
+            f'{primary_content}\n' + \
             '</primary_content>\n' + \
-            f'<prompt>\n{args.prompt}\n</prompt>'
+            f'<prompt>\n{user_prompt}\n</prompt>'
     else:
-        prompt += args.prompt
+        prompt += user_prompt
 
     return provider.generate(
         system_prompt,
         prompt,
-        output_token_cb,
+        outputter,
         thinker,
     )
 
 
-def process_file(system_prompt, args, file, thinker):
-    is_editting = args.edit or args.hash_edit
+def process_file(file, differ, **generate_kwargs):
+    response = generate(**generate_kwargs)
+    differ.show_diff()
 
-    content = file.read()
-    differ = HashDiffer(content) if args.hash_edit else \
-        RewriteDiffer(content)
+    selection = user_selection(f'\nConfirm changes to {file.name}', {
+        'y': True,
+        'n': False,
+        '*': 5,
+    })
 
-    if args.hash_edit:
-        tree = content_to_line_tree(content)
-        tree_content = line_tree_to_content(tree, with_hashes=True)
-        content = tree_content
+    if selection is True:
+        new_content = differ.applied_diff(response)
 
-    response = generate(
-        system_prompt,
-        args,
-        output_token_cb=differ.output_diff if is_editting else output_token,
-        thinker=thinker,
-        additional_content=content,
-    )
+        file.seek(0)
+        file.write(new_content)
+        file.truncate()
 
-    if is_editting:
-        selection = args.force
-        if not args.force:
-            differ.show_diff()
-            selection = user_selection(f'\nConfirm changes to {file.name}', {
-                'y': True,
-                'n': False,
-                '*': 5,
-            })
+        sys.stdout.write(file.name)
+        return True
 
-        if selection is True:
-            new_content = response if args.edit else \
-                    line_tree_to_content(differ.tree)
+    elif selection is False:
+        sys.stdout.write('No changes written')
+        return True
 
-            file.seek(0)
-            file.write(new_content)
-            file.truncate()
-
-            sys.stdout.write(file.name)
-        elif selection is False:
-            sys.stdout.write('No changes written')
-        else:
-            file.seek(0)
-            if args.context_files is not None:
-                for context_file in args.context_files:
-                    context_file.seek(0)
-
-            args.prompt += f'\n\n{selection}'
-
-            # TODO: reset the thinker output
-            process_file(system_prompt, args, file, thinker)
-
-            return
-
-    sys.stdout.write('\n')
+    else:
+        generate_kwargs['user_prompt'] += f'\n\n{selection}'
+        generate_kwargs['thinker'].reset()
+        differ.reset()
+        return process_file(file, differ, **generate_kwargs)
 
 
 def output_token(token):

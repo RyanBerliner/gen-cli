@@ -34,9 +34,9 @@ $ gen "what's this commenting style called" program.py
 Docstring
 ```
 
-Edit a file with `-e` or `-x`. Review the diff before confirming, or use
-`--force` to write without review. When confirming you can also type feedback
-to append to your prompt and refine the edits.
+Edit a file with `-e` or `-x`. Review the diff before confirming. When
+confirming you can also type feedback to append to your prompt and refine the
+edits.
 
 When using larger models prefer `-x` to perform hash based file edits. This is
 typically more efficient in this case (fewer tokens, faster).

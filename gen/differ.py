@@ -17,10 +17,19 @@ class BaseDiffer:
     RED = "\x1b[31m"
     RESET = "\x1b[0m"
 
+    # TODO: rename to show_final_diff and show_partial_diff, or show in
+    #       progress diff
+
     def show_diff(self, final=True):
         raise NotImplementedError
 
     def output_diff(self, new_token):
+        raise NotImplementedError
+
+    def applied_diff(self, *args):
+        raise NotImplementedError
+
+    def reset(self):
         raise NotImplementedError
 
     def _write_unified_diff(self, unified_diff_list):
@@ -93,9 +102,16 @@ class RewriteDiffer(BaseDiffer):
         self.show_diff(final=False)
         self._clean_alt_screen()
 
+    def applied_diff(self, new_content):
+        return new_content
+
+    def reset(self):
+        self.end_contents = ''
+
 
 class HashDiffer(BaseDiffer):
     def __init__(self, file_contents):
+        self.file_contents = file_contents
         self.start_contents = file_contents.splitlines(keepends=True)
         self.tree = content_to_line_tree(file_contents)
         self.applied_ops_count = 0
@@ -140,3 +156,11 @@ class HashDiffer(BaseDiffer):
         self._prep_alt_screen()
         self.show_diff(final=False)
         self._clean_alt_screen()
+
+    def applied_diff(self, *_):
+        return line_tree_to_content(self.tree)
+
+    def reset(self):
+        self.tree = content_to_line_tree(self.file_contents)
+        self.applied_ops_count = 0
+        self.ops_content = ''

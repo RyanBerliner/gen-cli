@@ -8,6 +8,9 @@ class BaseThinker:
     def done(self):
         raise NotImplementedError
 
+    def reset(self):
+        raise NotImplementedError
+
 
 class StdErrThinker(BaseThinker):
     def __init__(self):
@@ -25,3 +28,6 @@ class StdErrThinker(BaseThinker):
     def done(self):
         sys.stderr.write('\r\033[K')
         sys.stderr.flush()
+
+    def reset(self):
+        self.progress_count = 0
